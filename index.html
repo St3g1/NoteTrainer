@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.8">
+  <title>Sabine's Noten Trainer</title>
+  <link rel="stylesheet" href="MusicTrainer.css">
+  <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="NoteTrainer">
+  <link rel="manifest" href="site.webmanifest">
+</head>
+<body>
+  <h1 id="title">Sabine's Noten Trainer</h1>
+  <p id="instruction" style="visibility: hidden; opacity: 0;">Spiele den Ton auf dem <span id="instrumentName">Saxophon</span>:</p>
+  <div class="container">
+    <!--------------- BURGER MENU ------------------>
+    <div class="burger-menu" id="burgerMenu">
+      <img id="menu" src="fonts/menu.svg" alt="menu">
+    </div>
+    <!--------------- OPTIONS ------------------>
+    <div class="option-container" id="optionContainer">
+      <div id="optionsTitle"><h2>Optionen</h2></div>
+      <label id="showNoteNameCheckboxLabel"><input type="checkbox" id="showNoteNameCheckbox">Zeige Notennamen</label>
+      <label id="playNoteCheckboxLabel"><input type="checkbox" id="playNoteCheckbox">Spiele Ton</label>
+      <label id="useBassClefCheckboxLabel"><input type="checkbox" id="useBassClefCheckbox">Aktiviere <b>𝄢</b></label>
+      <label id="showSummaryCheckboxLabel"><input type="checkbox" id="showSummaryCheckbox">Zeige Zusammenfassung</label>
+      <div id="pauseCheckboxDiv" class="checkbox-text">
+        <label id="pauseCheckboxLabel"><input type="checkbox" id="pauseCheckbox" >Pause: 
+        <input type="text" id="pauseInput" value="1000"></label>
+      </div>
+      <div id="toleranceInputDiv" class="checkbox-text">
+        <label id="toleranceInputLabel">Toleranz (Hertz): <input type="text" id="toleranceInput" value="5"></label>
+      </div>
+      <div class="checkbox-text">
+        <label id="languageSelectorLabel" for="languageSelector">Sprache</label>
+        <select id="languageSelector">
+          <option value="de">Deutsch</option>
+          <option value="en">English</option>
+          <option value="it">Italiano</option>
+        </select>
+      </div>
+      <div id="instrumentTuningDiv" class="option-heading">Instrumenten Stimmung:</div>
+      <div class="options-radio-one-line">
+        <label id="instrumentSaxTenorRadioLabel"><input type="radio" name="instrument" id="instrumentSaxTenorRadio" value="saxTenor">Tenor Sax</label>
+        <label id="instrumentSaxAltRadioLabel"><input type="radio" name="instrument" id="instrumentSaxAltRadio" value="saxAlt">Alt Sax</label>
+        <label id="instrumentRegularRadioLabel"><input type="radio" name="instrument" id="instrumentRegularRadio" value="regular" checked>Klavier</label>
+      </div>
+      <div id="noteRangeHeadingDiv" class="option-heading">Notenraum:</div>
+      <div class="options-radio-one-line">
+        <label id="smallRangeRadioLabel"><input type="radio" name="noteRange" id="smallRangeRadio" value="small" checked>Klein</label>
+        <label id="middleRangeRadioLabel"><input type="radio" name="noteRange" id="middleRangeRadio" value="middle">Mittel</label>
+        <label id="largeRangeRadioLabel"><input type="radio" name="noteRange" id="largeRangeRadio" value="large">Groß</label>
+      </div>
+      <div id="noteFilterCheckboxDiv" class="checkbox-text">
+        <label id="noteFilterCheckboxLabel"><input type="checkbox" id="noteFilterCheckbox" >Noten Filter: 
+        <input type="text" id="noteFilterInput" value="C D E F G A H" ></label>
+      </div>
+    <div id="accidentalsDiv" class="option-heading">Vorzeichen:</div>
+      <div>
+        <label id="showSharpCheckboxLabel"><input type="checkbox" id="showSharpCheckbox">Aktiviere <b>♯</b></label>
+        <label id="showFlatCheckboxLabel"><input type="checkbox" id="showFlatCheckbox">Aktiviere <b>♭</bb></label>
+      </div>
+    </div>
+    <div class="content">
+      <!--------------- SAXOPHONE ------------------>
+      <div class="instrument-image"><img id="instrumentImage" src="images/saxTenor.png" alt="Saxophone" style="visibility: hidden; opacity: 0;"></div>
+      <!--------------- STAFF ------------------>
+      <div id="noteContainer" class="staff">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <img id="clefTreble" src="fonts/clef_treble.svg" alt="clefTreble" style="display: none;">
+        <img id="clefBass" src="fonts/clef_bass.svg" alt="clefBass" style="display: none;">
+        <img id="sharp" src="fonts/sharp.svg" alt="sharp" style="display: none;">
+        <img id="flat" src="fonts/flat.svg" alt="flat" style="display: none;">
+        <svg id="note" class="note" width="24" height="40" style="display: none;">
+          <ellipse id="noteEllipse" cx="12" cy="20" rx="12" ry="10" fill="black" />
+        </svg>
+        <div id="noteName" class="note-name"></div>
+      </div>
+    </div>
+    <!--------------- BUTTON ------------------>
+    <div class="buttons">    
+      <button id="startButton">Start</button>
+      <button id="stopButton" style="display: none;">Stop</button>
+    </divd>
+  </div>
+  <!--------------- MESSAGE ------------------>
+  <div id="message">
+    <span id="status"></span>
+    <span id="debugMsg" style="display: none;"></span>
+  </div>
+  <!--------------- STATISTICS ------------------>
+  <div id="statisticsDialog">
+    <h2 id="summaryHeading">Zusammenfassung</h2>
+    <div id="chartContainer"></div>
+    <h3><div id="summaryMessage">Noten, die Du noch üben solltest:</div></h3>
+    <div id="rankedListContainer"></div>
+    <button id="closeButton">Close</button>
+  </div>
+  <!------------------------------ SCRIPT ----------------------------------->
+  <script src="crepe/tfjs-0.8.0.min.js"></script>
+  <script src="MusicTrainer.js"></script>
+  <script>
+    window.addEventListener('load', loadOptions); // Load options when the page loads
+  </script>
+</body>
+</html>

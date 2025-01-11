@@ -1,0 +1,181 @@
+var notes = {
+  '1c': new Howl({
+    src: [
+      '/lydfiler/piano/28.mp3'
+    ]
+  }),
+  '1cis': new Howl({
+    src: [
+      '/lydfiler/piano/29.mp3'
+    ]
+  }),
+  '1d': new Howl({
+    src: [
+      '/lydfiler/piano/30.mp3'
+    ]
+  }),
+  '1dis': new Howl({
+    src: [
+      '/lydfiler/piano/31.mp3'
+    ]
+  }),
+  '1e': new Howl({
+    src: [
+      '/lydfiler/piano/32.mp3'
+    ]
+  }),
+  '1f': new Howl({
+    src: [
+      '/lydfiler/piano/33.mp3'
+    ]
+  }),
+  '1fis': new Howl({
+    src: [
+      '/lydfiler/piano/34.mp3'
+    ]
+  }),
+  '1g': new Howl({
+    src: [
+      '/lydfiler/piano/35.mp3'
+    ]
+  }),
+  '1gis': new Howl({
+    src: [
+      '/lydfiler/piano/36.mp3'
+    ]
+  }),
+  '2a': new Howl({
+    src: [
+      '/lydfiler/piano/37.mp3'
+    ]
+  }),
+  '2ais': new Howl({
+    src: [
+      '/lydfiler/piano/38.mp3'
+    ]
+  }),
+  '2b': new Howl({
+    src: [
+      '/lydfiler/piano/39.mp3'
+    ]
+  }),
+  '2c': new Howl({
+    src: [
+      '/lydfiler/piano/40.mp3'
+    ]
+  }),
+  '2cis': new Howl({
+    src: [
+      '/lydfiler/piano/41.mp3'
+    ]
+  }),
+  '2d': new Howl({
+    src: [
+      '/lydfiler/piano/42.mp3'
+    ]
+  }),
+  '2dis': new Howl({
+    src: [
+      '/lydfiler/piano/43.mp3'
+    ]
+  }),
+  '2e': new Howl({
+    src: [
+      '/lydfiler/piano/44.mp3'
+    ]
+  }),
+  '2f': new Howl({
+    src: [
+      '/lydfiler/piano/45.mp3'
+    ]
+  }),
+  '2fis': new Howl({
+    src: [
+      '/lydfiler/piano/46.mp3'
+    ]
+  }),
+  '2g': new Howl({
+    src: [
+      '/lydfiler/piano/47.mp3'
+    ]
+  }),
+  '2gis': new Howl({
+    src: [
+      '/lydfiler/piano/48.mp3'
+    ]
+  }),
+  '3a': new Howl({
+    src: [
+      '/lydfiler/piano/49.mp3'
+    ]
+  }),
+  '3ais': new Howl({
+    src: [
+      '/lydfiler/piano/50.mp3'
+    ]
+  }),
+  '3b': new Howl({
+    src: [
+      '/lydfiler/piano/51.mp3'
+    ]
+  }),
+  '3c': new Howl({
+    src: [
+      '/lydfiler/piano/52.mp3'
+    ]
+  }),
+  '3cis': new Howl({
+    src: [
+      '/lydfiler/piano/53.mp3'
+    ]
+  }),
+  '3d': new Howl({
+    src: [
+      '/lydfiler/piano/54.mp3'
+    ]
+  }),
+  '3dis': new Howl({
+    src: [
+      '/lydfiler/piano/55.mp3'
+    ]
+  }),
+  '3e': new Howl({
+    src: [
+      '/lydfiler/piano/56.mp3'
+    ]
+  }),
+  '3f': new Howl({
+    src: [
+      '/lydfiler/piano/57.mp3'
+    ]
+  }),
+  '3fis': new Howl({
+    src: [
+      '/lydfiler/piano/58.mp3'
+    ]
+  }),
+  '3g': new Howl({
+    src: [
+      '/lydfiler/piano/59.mp3'
+    ]
+  }),
+  '3gis': new Howl({
+    src: [
+      '/lydfiler/piano/60.mp3'
+    ]
+  }),
+  '4a': new Howl({
+    src: [
+      '/lydfiler/piano/61.mp3'
+    ]
+  }),
+  '4ais': new Howl({
+    src: [
+      '/lydfiler/piano/62.mp3'
+    ]
+  }),
+  '4b': new Howl({
+    src: [
+      '/lydfiler/piano/63.mp3'
+    ]
+  })

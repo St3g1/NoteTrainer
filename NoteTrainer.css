@@ -1,0 +1,243 @@
+/* .desktop-only {
+  display: none;
+} */
+
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+.instrument-image {
+  margin-left: 20px; 
+}
+
+/*------------- LAYOUT ------------------*/
+.container { /*menu, options, content, buttons*/
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  justify-content: center;
+  align-items: center; /* Center children horizontally */
+  margin-top: 20px;
+  width: 100%; /* Full width */
+  max-width: 800px; /* Optional: Set a max width */
+  margin-left: auto; /* Center the container horizontally */
+  margin-right: auto; /* Center the container horizontally */
+}
+
+.content { /*sax, staff*/
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%; /* Full width */
+  max-width: 600px; /* Optional: Set a max width */
+  margin: 0 auto; /* Center the content horizontally */
+  padding: 0px;
+}
+
+/*------------- MENU ------------------*/
+.burger-menu {
+  display: block;
+  flex-direction: column;
+  cursor: pointer;
+  position: relative;
+  left: 190px;
+  z-index: 5;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+  margin: 0px;
+  padding: 0px;
+  height: 40px;
+}
+
+/*----------------- OPTIONS ------------------*/
+.option-container {
+  display: none;
+  text-align: left;
+  padding: 10px 20px;
+  margin-left: 30px; /* Add some space between the note display and the checkboxes */
+  margin-top: 0px;
+  border: 1px solid rgb(195, 195, 195); /* Add a 1px border */
+  border-radius: 5px; /* Add rounded corners */
+  position: absolute;
+  background-color: white;
+  z-index: 10; /* Ensure it is above other elements */ 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Add a subtle shadow */
+}
+.option-container.active {
+  display: block;
+}
+.option-container h2 {
+  margin-block-start: 0.1em;
+  margin-block-end: 0.5em;
+}
+.option-container label {
+  display: block; /* Forces a line break after each label */
+  margin-bottom: 5px; /* Adds some space between the checkboxes */
+  margin-right: 7px; /*Space: [x] text <=> [x] */ 
+}
+.option-container label input {
+  margin-right: 5px; /*Space: [x] <=> text*/ 
+}
+.option-container .checkbox-text label {
+  display: flex;
+  align-items: center;
+  margin-right: 10px; /* Add some space between the checkbox and the text input */
+  white-space: nowrap; /* Prevent the text from wrapping */
+}
+.option-container .checkbox-text input[type="text"] {
+  flex: 1; /* Allow the text input to take the remaining space */
+  margin-left: 10px;
+  width: 90px;
+}
+.option-container .checkbox-text {
+  display: flex;
+  align-items: center;
+}
+.option-container .option-heading {
+  font-weight: bold; /* Make the section titles bold */
+  margin-top: 15px; /* Increase the top margin to create more space */
+  margin-bottom: 5px; /* Increase the top margin to create more space */
+}
+.options-radio-one-line {
+  display: flex;
+  gap: 5px; /* Optional: Abstand zwischen den Optionen */
+}
+.options-radio-one-line label {
+  display: flex;
+  align-items: center;
+}
+
+/*------------- STAFF ------------------*/
+.staff {
+  position: relative;
+  width: 200px;
+  height: 80px;
+  /* border: 1px solid black; */
+  margin: 150px 20px;
+  padding: 0px 0px;
+}
+
+.staff .line {
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background-color: black;
+}
+
+.staff .line:nth-child(1) { top: 20px; }
+.staff .line:nth-child(2) { top: 40px; }
+.staff .line:nth-child(3) { top: 60px; }
+.staff .line:nth-child(4) { top: 80px; }
+.staff .line:nth-child(5) { top: 100px; }
+
+#clefTreble {
+  position: absolute;
+  left: 14px;
+  top: 33px; /* Adjusted to position the clef correctly */
+  transform: scale(1.7);
+}
+#clefBass {
+  position: absolute;
+  left: 14px;
+  top: 35px; /* Adjusted to position the clef correctly */
+  transform: scale(1.7);
+}
+
+/*------------- NOTE ------------------*/
+#sharp {
+  position: absolute;
+  left: 70px;
+}
+#flat {
+  position: absolute;
+  left: 73px;
+}
+
+.note-name {
+  position: absolute;
+  left: 150px;
+  top: -20px;
+  font-size: 1.5em;
+  text-align: right;
+  width: 50px;
+  color: rgb(132, 132, 132);
+}
+
+.note {
+  position: absolute;
+  left: 100px;
+}
+
+.ledger-line {
+  position: absolute;
+  left: 90px;
+  width: 45px;
+  height: 2px;
+  background-color: black;
+}
+
+/*----------------- BUTTONS ------------------*/
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 20px;
+  background-color: green; /* Set the button background color to green */
+  color: white; /* Set the text color to white for better contrast */
+  border: none; /* Remove the default border */
+  border-radius: 10px; /* Optional: Add rounded corners */
+  cursor: pointer; /* Change the cursor to a pointer when hovering */
+}
+.buttons {
+  display: flex; 
+  gap: 10px;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 600px; /* Optional: Set a max width */
+  margin: 0 auto; /* Center the content horizontally */
+  padding: 0px;
+}
+
+/*----------------- MESSAGES ------------------*/
+#message {
+  margin: 10px;
+  font-size: 1em;
+  font-weight: normal;
+  font-style: italic;
+}
+.message-red {
+  color: red;
+}
+.message-green {
+  color: green;
+}
+
+/*----------------- STATISTICS ------------------*/
+#statisticsDialog {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+#chartContainer {
+  width: 200px;
+  height: 150px;
+  margin: 0 auto;
+}
+#rankedListContainer {
+  margin-top: 20px;
+  text-align: center;
+}
+#rankedListContainer ul {
+  list-style-type: none;
+  font-weight: normal;
+  padding: 0;
+}
+#rankedListContainer li {
+  margin: 5px 0;
+}
