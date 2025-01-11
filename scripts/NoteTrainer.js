@@ -2,7 +2,8 @@
  ToDo:
  - StartButton should be temporarily disabled until access to micro has been granted
  - No tone should be played until the micro dialog has been accepted (not technically...but from a user-interaction)
-*/
+ - Show note intonation if close to the note
+ */
  
 /*--------- Last Settings  --------------------------*/
 // Load saved options from localStorage
@@ -391,7 +392,7 @@ async function playMp3(note) {
 // Load the audio file for the given note (can only be used with WebServer!)
 async function loadMp3(note) {
   try {
-    const response = await fetch("audio/" + note.mp3);
+    const response = await fetch("https://tobiwern.github.io/NoteTrainer/audio/" + note.mp3);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -726,9 +727,9 @@ document.getElementById('closeButton').addEventListener('click', () => {
 
 /*----------------------- LANGUAGE -------------------------------*/
 
-document.getElementById('languageSelector').addEventListener('change', (event) => {
+languageSelector.addEventListener('change', (event) => {
   setLanguage(event.target.value);
-  if(running) {checkNote(null);} //to update message
+  if(running && stopButton.style.display == "block") {checkNote(null);} //to update message
   saveOptions();
   updateTexts(); // Update all texts based on the new language
 });
@@ -781,7 +782,7 @@ function updateTexts() {
   document.getElementById('closeButton').textContent = getText('summary', 'closeButton');
 }
 
-let currentLanguage = 'en'; // Default language is German
+let currentLanguage = 'en'; // Default language is English
 
 function setLanguage(language) {
   currentLanguage = language;
@@ -805,3 +806,18 @@ function initLanguageSelector() {
     languageSelector.appendChild(option);
   });
 }
+
+/*----------------------- DEBUG (Note mp3) -------------------------------*/
+
+noteIndex = 0;
+document.getElementById("top").addEventListener('dblclick', () => {noteIndex=0;});
+document.getElementById("top").addEventListener('click', () => {
+  noteIndex--;
+  if(noteIndex < 0){noteIndex = notesFiltered.length-1;}
+  displayNote(notesFiltered[noteIndex]);}
+);
+document.getElementById("bot").addEventListener('click', () => {
+  noteIndex++;
+  if(noteIndex >= notesFiltered.length){noteIndex =0;}  
+  displayNote(notesFiltered[noteIndex]);}
+);
