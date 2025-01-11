@@ -19,6 +19,7 @@ function loadOptions() {
   pauseInput.disabled = !pauseCheckbox.checked;
   pauseCheckbox.checked = JSON.parse(localStorage.getItem("pauseCheckbox")) || false;
   toleranceInput.value = localStorage.getItem("toleranceInput") || "5";
+  offsetInput.value = localStorage.getItem("offsetInput") || "0";
   languageSelector.value = localStorage.getItem("languageSelector") || currentLanguage;
   const selectedInstrument = localStorage.getItem("selectedInstrument") || "saxTenor";
   document.querySelector(`input[name="instrument"][value="${selectedInstrument}"]`).checked = true;
@@ -47,6 +48,7 @@ function saveOptions() {
   localStorage.setItem("pauseCheckbox", JSON.stringify(pauseCheckbox.checked));
   localStorage.setItem("pauseInput", pauseInput.value);
   localStorage.setItem("toleranceInput", toleranceInput.value);
+  localStorage.setItem("offsetInput", offsetInput.value);
   localStorage.setItem("languageSelector", languageSelector.value);
   localStorage.setItem("selectedInstrument", document.querySelector('input[name="instrument"]:checked').value);
   localStorage.setItem("selectedNoteRange", document.querySelector('input[name="noteRange"]:checked').value);
@@ -78,6 +80,7 @@ const showSummaryCheckbox = document.getElementById("showSummaryCheckbox");
 const pauseCheckbox = document.getElementById("pauseCheckbox");
 const pauseInput = document.getElementById("pauseInput");
 const toleranceInput = document.getElementById("toleranceInput");
+const offsetInput = document.getElementById("offsetInput");
 const languageSelector = document.getElementById("languageSelector");
 const instrumentSaxTenorRadio = document.getElementById("instrumentSaxTenorRadio");
 const instrumentSaxAltRadio = document.getElementById("instrumentSaxAltRadio");
@@ -122,6 +125,7 @@ showSummaryCheckbox.addEventListener('change', () => { saveOptions(); });
 pauseCheckbox.addEventListener('change', () => { pauseInput.disabled = !pauseCheckbox.checked; saveOptions(); });
 pauseInput.addEventListener('change', () => { saveOptions();});
 toleranceInput.addEventListener('change', () => { saveOptions(); });
+offsetInput.addEventListener('change', () => { saveOptions(); });
 instrumentSaxTenorRadio.addEventListener('change', () => { setSelectedNotes(); setFilteredNotes(); initNoteStatistics(); resetWeightedNoteNames(); updateInstrument(); saveOptions(); nextNote();});
 instrumentSaxAltRadio.addEventListener('change', () => { setSelectedNotes(); setFilteredNotes(); initNoteStatistics(); resetWeightedNoteNames(); updateInstrument(); saveOptions(); nextNote();});
 instrumentRegularRadio.addEventListener('change', () => { setSelectedNotes(); setFilteredNotes(); initNoteStatistics(); resetWeightedNoteNames(); updateInstrument(); saveOptions(); nextNote();});
@@ -131,7 +135,7 @@ smallRangeRadio.addEventListener('change', () => { saveOptions(); setFilteredNot
 middleRangeRadio.addEventListener('change', () => { saveOptions(); setFilteredNotes(); resetWeightedNoteNames(); nextNote(); });
 largeRangeRadio.addEventListener('change', () => { saveOptions(); setFilteredNotes(); resetWeightedNoteNames(); nextNote(); });
 noteFilterCheckbox.addEventListener('change', () => { noteFilterInput.disabled = !noteFilterCheckbox.checked; saveOptions(); setFilteredNotes(); resetWeightedNoteNames(); nextNote();}); 
-noteFilterInput.addEventListener('change', () => {  saveOptions(); setFilteredNotes(); resetWeightedNoteNames();}); //checkNotFilterInput();
+noteFilterInput.addEventListener('change', () => {  saveOptions(); setFilteredNotes(); resetWeightedNoteNames();}); 
 burgerMenu.addEventListener('click', () => {optionContainer.classList.toggle('active'); updateTexts();});
 document.addEventListener('click', (event) => { //close option dialog if clicked outside
   if (!optionContainer.contains(event.target) && !burgerMenu.contains(event.target)) {
@@ -158,6 +162,7 @@ function setOptionEnableState(state){ //no longer in use
   useBassClefCheckbox.disabled = !state;
   showSummaryCheckbox.disabled = !state;
   toleranceInput.disabled = !state;
+  offsetInput.disabled = !state;
   pauseCheckbox.disabled = !state;
   pauseInput.disabled = !state;
   instrumentSaxTenorRadio.disabled = !state;
@@ -218,14 +223,6 @@ function debug(text) {
 //--------------- NOTE SELECTION ------------------------------
 var notesSelected = []; 
 
-// function checkNotFilterInput() { //check if input is valid
-//   const noteFilter = noteFilterInput.value.split(' ').map(n => n.trim()).filter(n => n);
-//   const regex = new RegExp(noteFilter.join('|'), 'i');
-//   if (noteFilter.length > 0 && notesFiltered.filter(note => regex.test(note.name)).length === 0) {
-//     noteFilterInput.value = noteFilterInput.value.slice(0, -2); //remove last input
-//   } 
-// }
-
 function setSelectedNotes() {   
   notesSelected = getSelectedNotes();
 }
@@ -267,8 +264,17 @@ function filterNotes(notes){
     if (noteFilter.length > 0) {
       const regex = new RegExp(noteFilter.join('|'), 'i');
       notes = notes.filter(note => regex.test(note.name));
+      // Check for notes in noteFilter that are not in filteredNotes and add them
+      noteFilter.forEach(filterNote => {
+        const matchingNote = notesSelected.find(note => note.name === filterNote);
+        if (matchingNote && !notes.includes(matchingNote)) {
+          notes.push(matchingNote);
+          console.log('Added note:', matchingNote.name);
+        }
+      });
     }
   }
+  if(notes.length === 0){error(getText("texts", "noNotes"));} else {status("");}//no notes left
   return notes;
 }
 
@@ -283,6 +289,7 @@ function initNoteStatistics() {
 // Show the next note
 function nextNote() {
   noteEllipse.setAttribute("fill", "black"); // Reset note color after delay
+  resetSharpFlatColor();
   hideUpDownArrow();
   hideGhostNote();
   triedOnce = false;
@@ -368,7 +375,7 @@ function drawAccidentalMain(note, elementSharp, elementFlat){ //Vorzeichen
 }
 
 // Draw ledger lines for notes outside the staff
-function drawLedgerLines(note) {
+function drawLedgerLines(note, color = 'black') {
   const ledgerLines = document.querySelectorAll('.ledger-line');
   ledgerLines.forEach(line => line.remove());
   const offset = (note.position < clefSwitchPosition) && useBassClefCheckbox.checked ? 120 : 0;
@@ -378,7 +385,13 @@ function drawLedgerLines(note) {
     for (let i = 0; i < numLines; i++) {
       const line = document.createElement('div');
       line.className = 'ledger-line';
-      line.style.bottom = `${(position > 100 ? offset_global + 140 + (i * 20) : offset_global + 20 - (i * 20)) - 2}px`;
+      linePosition = (position > 100 ? offset_global + 140 + (i * 20) : offset_global + 20 - (i * 20)) - 2;
+      if(Math.abs(note.position -42 - linePosition) < 5){
+        line.style.backgroundColor = color;
+      } else {
+        line.style.backgroundColor = "black";
+      }
+      line.style.bottom = `${linePosition}px`;
       noteContainer.appendChild(line);
     }
   }
@@ -409,7 +422,7 @@ function playTone(note) {
   }
   oscillator = audioContext.createOscillator();
   oscillator.type = 'sawtooth'; // You can change the type to 'square', 'sine', 'sawtooth', 'triangle'
-  oscillator.frequency.setValueAtTime(note.frequency, audioContext.currentTime);
+  oscillator.frequency.setValueAtTime(note.frequency + parseInt(offsetInput.value), audioContext.currentTime);
   oscillator.connect(audioContext.destination);
   oscillator.start();
   oscillator.stop(audioContext.currentTime + 1); // Play the note for 1 second
@@ -628,7 +641,7 @@ function checkNote(detectedFrequency) {
     if (detectedFrequency) {
       const closestNote = getClosestNote(detectedFrequency);
       const closestNoteName = closestNote.name;
-      const targetFrequency = currentNote.frequency;
+      const targetFrequency = currentNote.frequency+parseInt(offsetInput.value);
       const frequencyDifference = targetFrequency - detectedFrequency;
       const correct = Math.abs(frequencyDifference) < parseInt(toleranceInput.value); // Allow small tolerance
       if (correct) { //CORRECT
@@ -637,9 +650,10 @@ function checkNote(detectedFrequency) {
           noteStatistics[currentNote.name].correct++;
         }
         correctNotePlayed = true; 
-        status("<span class='message-green'>" + getText("texts", "correct", {note: closestNoteName}) + "</span>");
+        status("<span class='message-green'>" + getText("texts", "correct", {note: currentNote.name}) + "</span>");
         highlightNote(true);
         toneNamePrevious = currentNote.name;
+        hideUpDownArrow();
         if(pauseCheckbox.checked){
           clearTimeout(pauseTimeout); // Clear any existing timeout
           pauseTimeout = setTimeout(() => {
@@ -692,6 +706,26 @@ function hideUpDownArrow(){
 
 function highlightNote(correct) {
   noteEllipse.setAttribute("fill", correct ? "green" : "red");
+  changeSvgColor('sharp', correct ? "green" : "red");
+  changeSvgColor('flat', correct ? "green" : "red"); 
+  drawLedgerLines(currentNote, correct ? 'green' : 'red');
+}
+
+function changeSvgColor(elementId, color) {
+  const svgElement = document.getElementById(elementId);
+  const red = "invert(12%) sepia(78%) saturate(7499%) hue-rotate(4deg) brightness(114%) contrast(118%)";
+  const green = "invert(17%) sepia(98%) saturate(5389%) hue-rotate(128deg) brightness(97%) contrast(105%)";
+  const black = "invert(0%) sepia(27%) saturate(1794%) hue-rotate(2deg) brightness(80%) contrast(97%)";
+  let colorNew;
+  if(color == "green"){colorNew = green;} else if(color == "red"){colorNew = red;} else {colorNew = black;}
+  if (svgElement && colorNew) {
+    svgElement.style.filter = colorNew;
+  }
+}
+
+function resetSharpFlatColor() { //reset color to black  
+  changeSvgColor('sharp', "black");
+  changeSvgColor('flat', "black"); 
 }
 
 function getClosestNote(frequency) {
@@ -705,6 +739,15 @@ function getClosestNote(frequency) {
     }
   }
   return closestNote;
+}
+
+function getNoteByName(noteName) {
+  for (let i = 0; i < notesSelected.length; i++) {
+    if (notesSelected[i].name === noteName) {
+      return notesSelected[i];
+    }
+  }
+  return null; // Return null if no matching note is found
 }
 
 noteNamesWeighted = [];
@@ -728,6 +771,7 @@ function getNextNote() {
   if(currentNote && notesFiltered.length > 1){noteNames = noteNames.filter(noteName => !noteName.includes(currentNote.name));} //don't use the same note
   const nextNoteName = noteNames[Math.floor(Math.random() * noteNames.length)]; //Randomize result
   const nextNote = notesFiltered.find(note => note.name === nextNoteName);
+  if(!nextNote){debug("getNextNote: no more notes!");}
   return nextNote;
 }
 
@@ -830,6 +874,8 @@ function updateTexts() {
   document.getElementById('pauseCheckboxLabel').title = getText('tooltips', 'pauseCheckboxLabel');
   document.getElementById('toleranceInputLabel').childNodes[0].textContent = getText('options', 'toleranceInput');
   document.getElementById('toleranceInputLabel').title = getText('tooltips', 'toleranceInputLabel');
+  document.getElementById('offsetInputLabel').childNodes[0].textContent = getText('options', 'offsetInput');
+  document.getElementById('offsetInputLabel').title = getText('tooltips', 'offsetInputLabel');
   document.getElementById('instrumentSaxTenorRadioLabel').childNodes[1].textContent = getText('options', 'instrumentSaxTenorRadio');
   document.getElementById('instrumentSaxTenorRadioLabel').title = getText('tooltips', 'instrumentSaxTenorRadioLabel');
   document.getElementById('instrumentSaxAltRadioLabel').childNodes[1].textContent = getText('options', 'instrumentSaxAltRadio');

@@ -180,17 +180,17 @@ body {
 .ghostNote {
   position: absolute;
   left: 100px;
-  opacity: 0.5;
+  opacity: 0.2;
 }
 #ghostSharp {
   position: absolute;
   left: 70px;
-  opacity: 0.6;
+  opacity: 0.1;
 }
 #ghostFlat {
   position: absolute;
   left: 73px;
-  opacity: 0.6;
+  opacity: 0.1;
 }
 
 /*----------------- INTONATION ------------------*/

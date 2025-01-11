@@ -10,7 +10,8 @@ const texts = {
       activating : "Activating microphone and initializing note detection...",
       starting: "Starting note detection...",
       loadingModel: "Loading model...",
-      modelLoaded: "Model loaded."
+      modelLoaded: "Model loaded.",
+      noNotes: "No notes matched the filter."
     },
     main: {
       title: "Note Trainer",
@@ -29,6 +30,7 @@ const texts = {
       showSummaryCheckbox: "Show Summary",
       pauseInput: "Pause",
       toleranceInput: "Tolerance (Hz)",
+      offsetInput: "Offset (Hz)",
       instrumentSaxTenorRadio: "Tenor Sax",
       instrumentSaxAltRadio: "Alto Sax",
       instrumentRegularRadio: "Piano",
@@ -53,6 +55,7 @@ const texts = {
       showSummaryCheckboxLabel: "Shows a summary when the stop button is pressed.",
       pauseCheckboxLabel: "Specifies the pause (in milliseconds) between a successful note and the next suggested note.",
       toleranceInputLabel: "Allows the specified deviation in Hertz for note recognition.",
+      offsetInputLabel: "Applies the specified offset in Hertz for note recognition.\nIf the instrument sounds deeper than the desired tone use a negative value to tune the recognition.",
       noteFilterCheckboxLabel: "Selects all notes matching the letters in the list. You can also indicate the octave like 'C4 D4 C5', or b und #.",
       showSharpCheckboxLabel: "Selects notes with ♯ (Cis, Dis, Fis, Gis, Ais).",
       showFlatCheckboxLabel: "Selects notes with ♭ (Des, Es, Ges, As, bB).",
@@ -81,7 +84,8 @@ const texts = {
       activating : "Aktiviere Mikrofon und initialisiere Notenerkennung...",
       starting: "Starte Notenerkennung...",
       loadingModel: "Lade Modell...",
-      modelLoaded: "Modell geladen."
+      modelLoaded: "Modell geladen.",
+      noNotes: "Keine Noten entsprechen dem Filter."
     },
     main: {
       title: "Noten Trainer",
@@ -100,6 +104,7 @@ const texts = {
       showSummaryCheckbox: "Zeige Zusammenfassung",
       pauseInput: "Pause",
       toleranceInput: "Toleranz (Hz)",
+      offsetInput: "Verschiebung (Hz)",
       instrumentSaxTenorRadio: "Tenor Sax",
       instrumentSaxAltRadio: "Alt Sax",
       instrumentRegularRadio: "Klavier",
@@ -124,6 +129,7 @@ const texts = {
       showSummaryCheckboxLabel: "Zeigt eine Zusammenfassung wenn die Stopp-Taste gedrückt wird.",
       pauseCheckboxLabel: "Gibt die Pause (in Millisekunden) zwischen einem erfolgreichen Ton und dem nächsten vorgeschlagenen Ton an.",
       toleranceInputLabel: "Erlaubt bei der Ton-Erkennung die angegebene Abweichung in Hertz.",
+      offsetInputLabel: "Wendet die angegebene Verschiebung in Hertz bei der Ton-Erkennung an.\nWenn das Instrument tiefer klingt als der vorgeschlagene Ton, verwende einen negativen Wert um die Erkennung anzupassen.",
       noteFilterCheckboxLabel: "Wählt alle Töne aus, die den Buchstaben in der Liste entsprechen.\nEs kann auch die Oktave angegeben werden, z.B. 'C4 D4 C5', oder b und #.",
       showSharpCheckboxLabel: "Wählt auch Noten mit ♯ (Cis, Dis, Fis, Gis, Ais) aus.",
       showFlatCheckboxLabel: "Wählt auch Noten mit ♭ (Des, Es, Ges, As, B) aus.",
@@ -152,7 +158,8 @@ const texts = {
       activating : "Attivazione del microfono e inizializzazione del rilevamento delle note...",
       starting: "Avvio del rilevamento delle note...",
       loadingModel: "Caricamento del modello...",
-      modelLoaded: "Modello caricato."
+      modelLoaded: "Modello caricato.",
+      noNotes: "Nessuna nota corrisponde al filtro."
     },
     main: {
       title: "Allenatore di Note",
@@ -171,6 +178,7 @@ const texts = {
       showSummaryCheckbox: "Mostra riepilogo",
       pauseInput: "Pausa",
       toleranceInput: "Tolleranza (Hz)",
+      offsetInput: "Spostamento (Hz)",
       instrumentSaxTenorRadio: "Sax Tenore",
       instrumentSaxAltRadio: "Sax Alto",
       instrumentRegularRadio: "Pianoforte",
@@ -195,6 +203,7 @@ const texts = {
       showSummaryCheckboxLabel: "Mostra un riepilogo quando viene premuto il pulsante di stop.",
       pauseCheckboxLabel: "Specifica la pausa (in millisecondi) tra una nota corretta e la prossima nota suggerita.",
       toleranceInputLabel: "Consente la deviazione specificata in Hertz per il riconoscimento delle note.",
+      offsetInputLabel: "Applica l'offset specificato in Hertz per il riconoscimento delle note.\nSe lo strumento suona più in basso del tono desiderato, utilizzare un valore negativo per regolare il riconoscimento.",
       noteFilterCheckboxLabel: "Seleziona tutte le note che corrispondono alle lettere nell'elenco. Puoi anche indicare l'ottava come 'C4 D4 C5', o b e #.",
       showSharpCheckboxLabel: "Seleziona le note con ♯ (Do#, Re#, Fa#, Sol#, La#).",
       showFlatCheckboxLabel: "Seleziona le note con ♭ (Re♭, Mi♭, Sol♭, La♭, Si♭).",
@@ -223,7 +232,8 @@ const texts = {
       activating : "Activation du microphone et initialisation de la détection des notes...",
       starting: "Démarrage de la détection des notes...",
       loadingModel: "Chargement du modèle...",
-      modelLoaded: "Modèle chargé."
+      modelLoaded: "Modèle chargé.",
+      noNotes: "Aucune note ne correspond au filtre."
     },
     main: {
       title: "Entraîneur de Notes",
@@ -242,6 +252,7 @@ const texts = {
       showSummaryCheckbox: "Afficher le résumé",
       pauseInput: "Pause",
       toleranceInput: "Tolérance (Hz)",
+      offsetInput: "Décalage (Hz)",
       instrumentSaxTenorRadio: "Sax Ténor",
       instrumentSaxAltRadio: "Sax Alto",
       instrumentRegularRadio: "Piano",
@@ -266,6 +277,7 @@ const texts = {
       showSummaryCheckboxLabel: "Affiche un résumé lorsque le bouton d'arrêt est enfoncé.",
       pauseCheckboxLabel: "Spécifie la pause (en millisecondes) entre une note correcte et la prochaine note suggérée.",
       toleranceInputLabel: "Permet la déviation spécifiée en Hertz pour la reconnaissance des notes.",
+      offsetInputLabel: "Applique le décalage spécifié en Hertz pour la reconnaissance des notes.\nSi l'instrument sonne plus bas que le ton désiré, utilisez une valeur négative pour accorder la reconnaissance.",
       noteFilterCheckboxLabel: "Sélectionne toutes les notes correspondant aux lettres de la liste. Vous pouvez également indiquer l'octave comme 'C4 D4 C5', ou b et #.",
       showSharpCheckboxLabel: "Sélectionne les notes avec ♯ (Do#, Ré#, Fa#, Sol#, La#).",
       showFlatCheckboxLabel: "Sélectionne les notes avec ♭ (Ré♭, Mi♭, Sol♭, La♭, Si♭).",
@@ -295,7 +307,8 @@ const texts = {
       activating : "Activando el micrófono e inicializando la detección de notas...",
       starting: "Iniciando la detección de notas...",
       loadingModel: "Cargando modelo...",
-      modelLoaded: "Modelo cargado."
+      modelLoaded: "Modelo cargado.",
+      noNotes: "No hay notas que coincidan con el filtro."
     },
     main: {
       title: "Entrenador de Notas",
@@ -314,6 +327,7 @@ const texts = {
       showSummaryCheckbox: "Mostrar resumen",
       pauseInput: "Pausa",
       toleranceInput: "Tolerancia (Hz)",
+      offsetInput: "Desplazamiento (Hz)",
       instrumentSaxTenorRadio: "Sax Tenor",
       instrumentSaxAltRadio: "Saxo Alto",
       instrumentRegularRadio: "Piano",
@@ -338,7 +352,8 @@ const texts = {
       showSummaryCheckboxLabel: "Muestra un resumen cuando se presiona el botón de detener.",
       pauseCheckboxLabel: "Especifica la pausa (en milisegundos) entre una nota correcta y la siguiente nota sugerida.",
       toleranceInputLabel: "Permite la desviación especificada en Hertz para el reconocimiento de notas.",
-      noteFilterCheckboxLabel: "Selecciona todas las notas que coinciden con las letras en la lista. También puedes indicar la octava como 'C4 D4 C5', o b y #.",
+      offsetInputLabel: "Aplica el desplazamiento especificado en Hertz para el reconocimiento de notas. Si el instrumento suena más bajo que el tono deseado, use un valor negativo para ajustar el reconocimiento.",  
+      noteFilterCheckboxLabel: "Selecciona todas las notas que coinciden con las letras en la lista.\nTambién puedes indicar la octava como 'C4 D4 C5', o b y #.",
       showSharpCheckboxLabel: "Selecciona notas con ♯ (Do#, Re#, Fa#, Sol#, La#).",
       showFlatCheckboxLabel: "Selecciona notas con ♭ (Re♭, Mi♭, Sol♭, La♭, Si♭).",
       instrumentSaxTenorRadioLabel: "El saxofón tenor se nota una novena mayor (14 semitonos) más alta de lo que suena y, por lo tanto, está afinado en Si♭.",
@@ -360,7 +375,8 @@ const texts = {
       activating: "Ativando o microfone e inicializando a detecção de notas...",
       starting: "Iniciando a detecção de notas...",
       loadingModel: "Carregando modelo...",
-      modelLoaded: "Modelo carregado."
+      modelLoaded: "Modelo carregado.",
+      noNotes: "Nenhuma nota corresponde ao filtro."
     },
     main: {
       title: "Treinador de Notas",
@@ -379,6 +395,7 @@ const texts = {
       showSummaryCheckbox: "Mostrar resumo",
       pauseInput: "Pausa",
       toleranceInput: "Tolerância (Hz)",
+      offsetInput: "Deslocamento (Hz)",
       instrumentSaxTenorRadio: "Sax Tenor",
       instrumentSaxAltRadio: "Sax Alto",
       instrumentRegularRadio: "Piano",
@@ -403,6 +420,7 @@ const texts = {
       showSummaryCheckboxLabel: "Mostra um resumo quando o botão de parar é pressionado.",
       pauseCheckboxLabel: "Especifica a pausa (em milissegundos) entre uma nota correta e a próxima nota sugerida.",
       toleranceInputLabel: "Permite a variação especificada em Hertz para o reconhecimento de notas.",
+      offsetInputLabel: "Aplica o deslocamento especificado em Hertz para o reconhecimento de notas.\nSe o instrumento soa mais baixo do que o tom desejado, use um valor negativo para ajustar o reconhecimento.",
       noteFilterCheckboxLabel: "Seleciona todas as notas que correspondem às letras na lista. Você também pode indicar a oitava como 'C4 D4 C5', ou b e #.",
       showSharpCheckboxLabel: "Seleciona notas com ♯ (Dó#, Ré#, Fá#, Sol#, Lá#).",
       showFlatCheckboxLabel: "Seleciona notas com ♭ (Ré♭, Mi♭, Sol♭, Lá♭, Si♭).",
@@ -431,7 +449,8 @@ const texts = {
       activating: "Microfoon activeren en nootdetectie initialiseren...",
       starting: "Nootdetectie starten...",
       loadingModel: "Model laden...",
-      modelLoaded: "Model geladen."
+      modelLoaded: "Model geladen.",
+      noNotes: "Geen noten kwamen overeen met het filter."
     },
     main: {
       title: "Notentrainer",
@@ -450,6 +469,7 @@ const texts = {
       showSummaryCheckbox: "Toon samenvatting",
       pauseInput: "Pauze",
       toleranceInput: "Tolerantie (Hz)",
+      offsetInput: "Offset (Hz)",
       instrumentSaxTenorRadio: "Tenorsaxofoon",
       instrumentSaxAltRadio: "Altsaxofoon",
       instrumentRegularRadio: "Piano",
@@ -474,6 +494,7 @@ const texts = {
       showSummaryCheckboxLabel: "Toont een samenvatting wanneer de stopknop wordt ingedrukt.",
       pauseCheckboxLabel: "Geeft de pauze (in milliseconden) aan tussen een succesvolle noot en de volgende voorgestelde noot.",
       toleranceInputLabel: "Staat de opgegeven afwijking in Hertz toe voor nootherkenning.",
+      offsetInputLabel: "Past de opgegeven offset in Hertz toe voor nootherkenning.\nAls het instrument lager klinkt dan de voorgestelde noot, gebruik dan een negatieve waarde om de herkenning aan te passen.",
       noteFilterCheckboxLabel: "Selecteert alle noten die overeenkomen met de letters in de lijst. Je kunt ook het octaaf aangeven zoals 'C4 D4 C5', of b en #.",
       showSharpCheckboxLabel: "Selecteert noten met ♯ (Cis, Dis, Fis, Gis, Ais).",
       showFlatCheckboxLabel: "Selecteert noten met ♭ (Des, Es, Ges, As, Bes).",
@@ -502,7 +523,8 @@ const texts = {
       activating: "Aktywowanie mikrofonu i inicjalizacja wykrywania nut...",
       starting: "Rozpoczynanie wykrywania nut...",
       loadingModel: "Ładowanie modelu...",
-      modelLoaded: "Model załadowany."
+      modelLoaded: "Model załadowany.",
+      noNotes: "Brak nut pasujących do filtra."
     },
     main: {
       title: "Trener Nut",
@@ -521,6 +543,7 @@ const texts = {
       showSummaryCheckbox: "Pokaż podsumowanie",
       pauseInput: "Pauza",
       toleranceInput: "Tolerancja (Hz)",
+      offsetInput: "Przesunięcie (Hz)",
       instrumentSaxTenorRadio: "Saksofon tenorowy",
       instrumentSaxAltRadio: "Saksofon altowy",
       instrumentRegularRadio: "Fortepian",
@@ -545,6 +568,7 @@ const texts = {
       showSummaryCheckboxLabel: "Pokazuje podsumowanie po naciśnięciu przycisku stop.",
       pauseCheckboxLabel: "Określa pauzę (w milisekundach) między poprawną nutą a następną zasugerowaną nutą.",
       toleranceInputLabel: "Pozwala na określoną odchyłkę w Hertzach dla rozpoznawania nut.",
+      offsetInputLabel: "Stosuje określone przesunięcie w Hertzach dla rozpoznawania nut.\nJeśli instrument brzmi niższy niż pożądana nuta, użyj wartości ujemnej do dostosowania rozpoznawania.",
       noteFilterCheckboxLabel: "Wybiera wszystkie nuty pasujące do liter na liście. Możesz również wskazać oktawę, np. 'C4 D4 C5', lub b i #.",
       showSharpCheckboxLabel: "Wybiera nuty z ♯ (Cis, Dis, Fis, Gis, Ais).",
       showFlatCheckboxLabel: "Wybiera nuty z ♭ (Des, Es, Ges, As, Bes).",
@@ -573,7 +597,8 @@ const texts = {
       activating: "Mikrofon aktiválása és hangfelismerés inicializálása...",
       starting: "Hangfelismerés indítása...",
       loadingModel: "Modell betöltése...",
-      modelLoaded: "Modell betöltve."
+      modelLoaded: "Modell betöltve.",
+      noNotes: "Nincs hang, amely megfelel a szűrőnek."
     },
     main: {
       title: "Hang Tréner",
@@ -592,6 +617,7 @@ const texts = {
       showSummaryCheckbox: "Összefoglaló megjelenítése",
       pauseInput: "Szünet",
       toleranceInput: "Tolerancia (Hz)",
+      offsetInput: "Eltolás (Hz)",
       instrumentSaxTenorRadio: "Tenor szaxofon",
       instrumentSaxAltRadio: "Alt szaxofon",
       instrumentRegularRadio: "Zongora",
@@ -616,6 +642,7 @@ const texts = {
       showSummaryCheckboxLabel: "Összefoglalót jelenít meg, amikor a leállítás gombot megnyomják.",
       pauseCheckboxLabel: "Meghatározza a szünetet (milliszekundumban) egy sikeres hang és a következő javasolt hang között.",
       toleranceInputLabel: "Megengedi a megadott eltérést Hertzben a hangfelismeréshez.",
+      offsetInputLabel: "A hangfelismeréshez megadott eltolást Hertzben alkalmazza.\nHa a hangszer alacsonyabban szól, mint a kívánt hang, használjon negatív értéket a felismerés beállításához.",
       noteFilterCheckboxLabel: "Kiválasztja az összes hangot, amely megfelel a listában szereplő betűknek. Az oktávot is megadhatod, mint például 'C4 D4 C5', vagy b és #.",
       showSharpCheckboxLabel: "Kiválasztja a ♯ hangokat (Cisz, Disz, Fisz, Gisz, Aisz).",
       showFlatCheckboxLabel: "Kiválasztja a ♭ hangokat (Desz, Esz, Gesz, Asz, B).",
