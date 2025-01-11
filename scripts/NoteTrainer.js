@@ -762,6 +762,7 @@ languageSelector.addEventListener('change', (event) => {
 
 function updateTexts() {
   //MAIN GUI
+  document.title = getText('main', 'title');
   document.getElementById('title').textContent = getText('main', 'title');
   document.getElementById('instruction').innerHTML = getText('main', 'instruction'); //, { instrument: document.getElementById('instrumentName').textContent });
   updateInstrument();
