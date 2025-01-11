@@ -49,7 +49,7 @@ const texts = {
     tooltips: {
       showNoteNameCheckboxLabel: "Shows the note name over the staff.\n(Disable this option to learn the direct translation from note to position.)",
       showArrowsCheckboxLabel: "Shows an arrow indicating whether the desired note is higher or lower than the played note.",
-      showGhostNoteCheckboxLabel: "Shows a ghost note indicating the currently played note.",
+      showGhostNoteCheckboxLabel: "Shows the currently played note faintly.",
       playNoteCheckboxLabel: "Plays the newly suggested note briefly.",
       useBassClefCheckboxLabel: "Switches to bass clef if needed.",
       showSummaryCheckboxLabel: "Shows a summary when the stop button is pressed.",
@@ -123,7 +123,7 @@ const texts = {
     tooltips: {
       showNoteNameCheckboxLabel: "Zeigt den Notennamen über den Noteninien an.\n(Deaktiviere diese Option um die direkte Übersetzung von Note zu Position zu lernen.)",
       showArrowsCheckboxLabel: "Zeigt einen Pfeil an, der angibt, ob die gewünschte Note höher oder tiefer wie der gespielte Ton ist.",
-      showGhostNoteCheckboxLabel: "Zeigt eine Geisternote an, die den aktuell gespielten Ton anzeigt.",
+      showGhostNoteCheckboxLabel: "Blendet die aktuell gespielte Note schwach ein.",
       playNoteCheckboxLabel: "Spielt kurz den neu vorgeschlagenen Ton ab.",
       useBassClefCheckboxLabel: "Wechselt bei Bedarf in den Bassschlüssel.",
       showSummaryCheckboxLabel: "Zeigt eine Zusammenfassung wenn die Stopp-Taste gedrückt wird.",
