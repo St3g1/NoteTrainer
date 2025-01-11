@@ -176,6 +176,16 @@ body {
   background-color: black;
 }
 
+/*----------------- INTONATION ------------------*/
+#noteUp {
+  position: absolute;
+  left: 100px;
+}
+#noteDown {
+  position: absolute;
+  left: 100px;
+}
+
 /*----------------- BUTTONS ------------------*/
 button {
   padding: 10px 20px;

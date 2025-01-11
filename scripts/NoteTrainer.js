@@ -10,6 +10,7 @@
 function loadOptions() {
   initLanguageSelector();
   showNoteNameCheckbox.checked = JSON.parse(localStorage.getItem("showNoteNameCheckbox")) || false;
+  showArrowsCheckbox.checked = JSON.parse(localStorage.getItem("showArrowsCheckbox")) || false;
   playNoteCheckbox.checked = JSON.parse(localStorage.getItem("playNoteCheckbox")) || false;
   useBassClefCheckbox.checked = JSON.parse(localStorage.getItem("useBassClefCheckbox")) || false;
   showSummaryCheckbox.checked = JSON.parse(localStorage.getItem("showSummaryCheckbox")) || false;
@@ -37,6 +38,7 @@ function loadOptions() {
 // Save options to localStorage
 function saveOptions() {
   localStorage.setItem("showNoteNameCheckbox", JSON.stringify(showNoteNameCheckbox.checked));
+  localStorage.setItem("showArrowsCheckbox", JSON.stringify(showArrowsCheckbox.checked));
   localStorage.setItem("playNoteCheckbox", JSON.stringify(playNoteCheckbox.checked));
   localStorage.setItem("useBassClefCheckbox", JSON.stringify(useBassClefCheckbox.checked));
   localStorage.setItem("showSummaryCheckbox", JSON.stringify(showSummaryCheckbox.checked));
@@ -63,6 +65,7 @@ const startButton = document.getElementById("startButton");
 const stopButton = document.getElementById("stopButton");
 const noteNameElement = document.getElementById("noteName");
 const showNoteNameCheckbox = document.getElementById("showNoteNameCheckbox");
+const showArrowsCheckbox = document.getElementById("showArrowsCheckbox");
 const playNoteCheckbox = document.getElementById("playNoteCheckbox");
 const useBassClefCheckbox = document.getElementById("useBassClefCheckbox");
 const showSummaryCheckbox = document.getElementById("showSummaryCheckbox");
@@ -81,6 +84,8 @@ const noteFilterInput = document.getElementById("noteFilterInput");
 const showSharpCheckbox = document.getElementById("showSharpCheckbox");
 const showFlatCheckbox = document.getElementById("showFlatCheckbox");
 const noteEllipse = document.getElementById("noteEllipse");
+const noteUp = document.getElementById("noteUp");
+const noteDown = document.getElementById("noteDown");
 const burgerMenu = document.getElementById('burgerMenu');
 const optionContainer = document.getElementById('optionContainer');
 const instrumentImage = document.getElementById('instrumentImage');
@@ -97,6 +102,7 @@ showNoteNameCheckbox.addEventListener('change', () => {
   triedOnce = false; //in order to trigger update of message
   checkNote(null);
 });
+showArrowsCheckbox.addEventListener('change', () => { saveOptions(); hideUpDownArrow(); });
 playNoteCheckbox.addEventListener('change', () => {
   saveOptions(); 
   playMp3(currentNote);
@@ -260,6 +266,7 @@ function initNoteStatistics() {
 // Show the next note
 function nextNote() {
   noteEllipse.setAttribute("fill", "black"); // Reset note color after delay
+  hideUpDownArrow();
   triedOnce = false;
   decayTimeoutReached = false; // Reset decay timeout flag
   setTimeout(() => {decayTimeoutReached = true;}, 3000); // Set decay timeout to 3 seconds, until the previous note is detected as incorrect
@@ -607,6 +614,7 @@ function checkNote(detectedFrequency) {
             noteStatistics[currentNote.name].incorrect++;
           }
           highlightNote(false);
+          showUpDownArrow(currentNote.name, closestNoteName, targetFrequency, detectedFrequency);
         }
       }
       triedOnce = true;
@@ -618,6 +626,23 @@ function checkNote(detectedFrequency) {
       silence = true; // triggers a new checking interval
     }
   }
+}
+
+function showUpDownArrow(noteName, closestNote, targetFrequency, detectedFrequency){
+  hideUpDownArrow();
+  if(!showArrowsCheckbox.checked){return;}
+  if (detectedFrequency < targetFrequency) {
+    noteUp.style.display = "block";
+    noteUp.style.bottom = `${currentNote.position + 20 + offset_global + 12}px`;
+  } else if (detectedFrequency > targetFrequency) {
+    noteDown.style.display = "block";
+    noteDown.style.bottom = `${currentNote.position - 20 + offset_global + 12}px`;
+  }
+}
+
+function hideUpDownArrow(){
+  noteUp.style.display = "none";
+  noteDown.style.display = "none";
 }
 
 function highlightNote(correct) {
@@ -655,7 +680,7 @@ function updateWeightedNoteNames(noteName, type) {
 
 function getNextNote() {
   let noteNames = noteNamesWeighted;
-  if(currentNote && noteNames.length > 1){noteNames = noteNames.filter(noteName => !noteName.includes(currentNote.name));} //don't use the same note
+  if(currentNote && notesFiltered.length > 1){noteNames = noteNames.filter(noteName => !noteName.includes(currentNote.name));} //don't use the same note
   const nextNoteName = noteNames[Math.floor(Math.random() * noteNames.length)]; //Randomize result
   const nextNote = notesFiltered.find(note => note.name === nextNoteName);
   return nextNote;
@@ -745,6 +770,8 @@ function updateTexts() {
   document.getElementById('optionsTitle').childNodes[0].textContent = getText('options', 'optionsTitle');
   document.getElementById('showNoteNameCheckboxLabel').childNodes[1].textContent = getText('options', 'showNoteNameCheckbox');
   document.getElementById('showNoteNameCheckboxLabel').title = getText('tooltips', 'showNoteNameCheckboxLabel');
+  document.getElementById('showArrowsCheckboxLabel').childNodes[1].textContent = getText('options', 'showArrowsCheckbox');
+  document.getElementById('showArrowsCheckboxLabel').title = getText('tooltips', 'showArrowsCheckboxLabel');
   document.getElementById('playNoteCheckboxLabel').childNodes[1].textContent = getText('options', 'playNoteCheckbox');
   document.getElementById('playNoteCheckboxLabel').title = getText('tooltips', 'playNoteCheckboxLabel');
   document.getElementById('useBassClefCheckboxLabel').childNodes[1].textContent = getText('options', 'useBassClefCheckbox');

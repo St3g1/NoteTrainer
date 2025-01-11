@@ -22,6 +22,7 @@ const texts = {
     options: {
       optionsTitle: "Options",
       showNoteNameCheckbox: "Show Note Names",
+      showArrowsCheckbox: "Show Help Arrows",
       playNoteCheckbox: "Play Note",
       useBassClefCheckbox: "Activate ",
       showSummaryCheckbox: "Show Summary",
@@ -44,6 +45,7 @@ const texts = {
     },
     tooltips: {
       showNoteNameCheckboxLabel: "Shows the note name over the staff.\n(Disable this option to learn the direct translation from note to position.)",
+      showArrowsCheckboxLabel: "Shows an arrow indicating whether the desired note is higher or lower than the played note.",
       playNoteCheckboxLabel: "Plays the newly suggested note briefly.",
       useBassClefCheckboxLabel: "Switches to bass clef if needed.",
       showSummaryCheckboxLabel: "Shows a summary when the stop button is pressed.",
@@ -89,6 +91,7 @@ const texts = {
     options: {  
       optionsTitle: "Optionen",
       showNoteNameCheckbox: "Zeige Notennamen",
+      showArrowsCheckbox: "Zeige Hilfspfeile",
       playNoteCheckbox: "Spiele Ton",
       useBassClefCheckbox: "Aktiviere ",
       showSummaryCheckbox: "Zeige Zusammenfassung",
@@ -111,6 +114,7 @@ const texts = {
     },
     tooltips: {
       showNoteNameCheckboxLabel: "Zeigt den Notennamen über den Noteninien an.\n(Deaktiviere diese Option um die direkte Übersetzung von Note zu Position zu lernen.)",
+      showArrowsCheckboxLabel: "Zeigt einen Pfeil an, der angibt, ob die gewünschte Note höher oder tiefer wie der gespielte Ton ist.",
       playNoteCheckboxLabel: "Spielt kurz den neu vorgeschlagenen Ton ab.",
       useBassClefCheckboxLabel: "Wechselt bei Bedarf in den Bassschlüssel.",
       showSummaryCheckboxLabel: "Zeigt eine Zusammenfassung wenn die Stopp-Taste gedrückt wird.",
@@ -156,6 +160,7 @@ const texts = {
     options: {
       optionsTitle: "Opzioni",
       showNoteNameCheckbox: "Mostra i nomi delle note",
+      showArrowsCheckbox: "Mostra frecce di aiuto",
       playNoteCheckbox: "Suona la nota",
       useBassClefCheckbox: "Attiva ",
       showSummaryCheckbox: "Mostra riepilogo",
@@ -178,6 +183,7 @@ const texts = {
     },
     tooltips: {
       showNoteNameCheckboxLabel: "Mostra il nome della nota sopra il pentagramma.\n(Disabilita questa opzione per imparare la traduzione diretta da nota a posizione.)",
+      showArrowsCheckboxLabel: "Mostra una freccia che indica se la nota desiderata è più alta o più bassa della nota suonata.",
       playNoteCheckboxLabel: "Suona brevemente la nota appena suggerita.",
       useBassClefCheckboxLabel: "Passa alla chiave di basso se necessario.",
       showSummaryCheckboxLabel: "Mostra un riepilogo quando viene premuto il pulsante di stop.",
@@ -223,6 +229,7 @@ const texts = {
     options: {
       optionsTitle: "Options",
       showNoteNameCheckbox: "Afficher les noms des notes",
+      showArrowsCheckbox: "Afficher les flèches d'aide",
       playNoteCheckbox: "Jouer la note",
       useBassClefCheckbox: "Activer ",
       showSummaryCheckbox: "Afficher le résumé",
@@ -245,6 +252,7 @@ const texts = {
     },
     tooltips: {
       showNoteNameCheckboxLabel: "Affiche le nom de la note au-dessus de la portée.\n(Désactivez cette option pour apprendre la traduction directe de la note à la position.)",
+      showArrowsCheckboxLabel: "Affiche une flèche indiquant si la note désirée est plus haute ou plus basse que la note jouée.",
       playNoteCheckboxLabel: "Joue brièvement la note nouvellement suggérée.",
       useBassClefCheckboxLabel: "Passe à la clé de fa si nécessaire.",
       showSummaryCheckboxLabel: "Affiche un résumé lorsque le bouton d'arrêt est enfoncé.",
@@ -291,6 +299,7 @@ const texts = {
     options: {
       optionsTitle: "Opciones",
       showNoteNameCheckbox: "Mostrar nombres de notas",
+      showArrowsCheckbox: "Mostrar flechas de ayuda",
       playNoteCheckbox: "Tocar nota",
       useBassClefCheckbox: "Activar ",
       showSummaryCheckbox: "Mostrar resumen",
@@ -313,12 +322,21 @@ const texts = {
     },
     tooltips: {
       showNoteNameCheckboxLabel: "Muestra el nombre de la nota sobre el pentagrama.\n(Desactiva esta opción para aprender la traducción directa de la nota a la posición.)",
+      showArrowsCheckboxLabel: "Muestra una flecha que indica si la nota deseada es más alta o más baja que la nota tocada.",
       playNoteCheckboxLabel: "Reproduce brevemente la nota recién sugerida.",
       useBassClefCheckboxLabel: "Cambia a la clave de fa si es necesario.",
       showSummaryCheckboxLabel: "Muestra un resumen cuando se presiona el botón de detener.",
       pauseCheckboxLabel: "Especifica la pausa (en milisegundos) entre una nota correcta y la siguiente nota sugerida.",
       toleranceInputLabel: "Permite la desviación especificada en Hertz para el reconocimiento de notas.",
-      noteFilterCheckboxLabel: "Selecciona todas las notas que coinciden con las letras en la lista. También puedes indicar la octava como 'C4 D4 C5', o b y #."
+      noteFilterCheckboxLabel: "Selecciona todas las notas que coinciden con las letras en la lista. También puedes indicar la octava como 'C4 D4 C5', o b y #.",
+      showSharpCheckboxLabel: "Selecciona notas con ♯ (Do#, Re#, Fa#, Sol#, La#).",
+      showFlatCheckboxLabel: "Selecciona notas con ♭ (Re♭, Mi♭, Sol♭, La♭, Si♭).",
+      instrumentSaxTenorRadioLabel: "El saxofón tenor se nota una novena mayor (14 semitonos) más alta de lo que suena y, por lo tanto, está afinado en Si♭.",
+      instrumentSaxAltRadioLabel: "El saxofón alto se nota una sexta mayor (9 semitonos) más alta de lo que suena y, por lo tanto, está afinado en Mi♭.",
+      instrumentRegularRadioLabel: "La mayoría de los instrumentos se notan como suenan.",
+      smallRangeRadioLabel: "Selecciona solo un pequeño rango de notas.",
+      middleRangeRadioLabel: "Selecciona un rango medio de notas.",
+      largeRangeRadioLabel: "Selecciona un gran rango de notas."
     }
   },
   pt: {
@@ -344,6 +362,7 @@ const texts = {
     options: {
       optionsTitle: "Opções",
       showNoteNameCheckbox: "Mostrar nomes das notas",
+      showArrowsCheckbox: "Mostrar setas de ajuda",
       playNoteCheckbox: "Tocar nota",
       useBassClefCheckbox: "Ativar ",
       showSummaryCheckbox: "Mostrar resumo",
@@ -366,6 +385,7 @@ const texts = {
     },
     tooltips: {
       showNoteNameCheckboxLabel: "Mostra o nome da nota acima da pauta.\n(Desative esta opção para aprender a tradução direta de nota para posição.)",
+      showArrowsCheckboxLabel: "Mostra uma seta indicando se a nota desejada é mais alta ou mais baixa do que a nota tocada.",
       playNoteCheckboxLabel: "Toca brevemente a nota recém-sugerida.",
       useBassClefCheckboxLabel: "Muda para a clave de fá, se necessário.",
       showSummaryCheckboxLabel: "Mostra um resumo quando o botão de parar é pressionado.",
@@ -411,6 +431,7 @@ const texts = {
     options: {
       optionsTitle: "Opties",
       showNoteNameCheckbox: "Toon nootnamen",
+      showArrowsCheckbox: "Toon hulppijlen",
       playNoteCheckbox: "Speel noot",
       useBassClefCheckbox: "Activeer ",
       showSummaryCheckbox: "Toon samenvatting",
@@ -433,6 +454,7 @@ const texts = {
     },
     tooltips: {
       showNoteNameCheckboxLabel: "Toont de nootnaam boven de notenbalk.\n(Deactiveer deze optie om de directe vertaling van noot naar positie te leren.)",
+      showArrowsCheckboxLabel: "Toont een pijl die aangeeft of de gewenste noot hoger of lager is dan de gespeelde noot.",
       playNoteCheckboxLabel: "Speelt kort de nieuw voorgestelde noot.",
       useBassClefCheckboxLabel: "Schakelt indien nodig over naar de bassleutel.",
       showSummaryCheckboxLabel: "Toont een samenvatting wanneer de stopknop wordt ingedrukt.",
@@ -478,6 +500,7 @@ const texts = {
     options: {
       optionsTitle: "Opcje",
       showNoteNameCheckbox: "Pokaż nazwy nut",
+      showArrowsCheckbox: "Pokaż strzałki pomocnicze",
       playNoteCheckbox: "Zagraj nutę",
       useBassClefCheckbox: "Aktywuj ",
       showSummaryCheckbox: "Pokaż podsumowanie",
@@ -500,6 +523,7 @@ const texts = {
     },
     tooltips: {
       showNoteNameCheckboxLabel: "Pokazuje nazwę nuty nad pięciolinią.\n(Wyłącz tę opcję, aby nauczyć się bezpośredniego tłumaczenia nuty na pozycję.)",
+      showArrowsCheckboxLabel: "Pokazuje strzałkę wskazującą, czy pożądana nuta jest wyższa czy niższa od zagranej nuty.",
       playNoteCheckboxLabel: "Krótko odtwarza nowo zasugerowaną nutę.",
       useBassClefCheckboxLabel: "Przełącza na klucz basowy, jeśli to konieczne.",
       showSummaryCheckboxLabel: "Pokazuje podsumowanie po naciśnięciu przycisku stop.",
@@ -545,6 +569,7 @@ const texts = {
     options: {
       optionsTitle: "Beállítások",
       showNoteNameCheckbox: "Hangnevek megjelenítése",
+      showArrowsCheckbox: "Segítségnyújtó nyíl megjelenítése",
       playNoteCheckbox: "Hang lejátszása",
       useBassClefCheckbox: "Basszuskulcs használata ",
       showSummaryCheckbox: "Összefoglaló megjelenítése",
@@ -567,6 +592,7 @@ const texts = {
     },
     tooltips: {
       showNoteNameCheckboxLabel: "Megjeleníti a hang nevét a kottán.\n(Kapcsold ki ezt az opciót, hogy megtanuld a hang közvetlen fordítását a pozícióra.)",
+      showArrowsCheckboxLabel: "Egy nyíl mutatja, hogy a kívánt hang magasabb vagy alacsonyabb-e, mint a megszólalt hang.",
       playNoteCheckboxLabel: "Röviden lejátsza az újonnan javasolt hangot.",
       useBassClefCheckboxLabel: "Szükség esetén átvált basszuskulcsra.",
       showSummaryCheckboxLabel: "Összefoglalót jelenít meg, amikor a leállítás gombot megnyomják.",
