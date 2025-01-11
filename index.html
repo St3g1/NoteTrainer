@@ -4,16 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=0.8">
   <title>Sabine's Noten Trainer</title>
-  <link rel="stylesheet" href="MusicTrainer.css">
+  <link rel="stylesheet" href="NoteTrainer.css">
   <link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
   <meta name="apple-mobile-web-app-title" content="NoteTrainer">
   <link rel="manifest" href="site.webmanifest">
+  <script src="languages.js"></script>
+  <script src="instruments.js"></script>
 </head>
 <body>
-  <h1 id="title">Sabine's Noten Trainer</h1>
+  <h1 id="title">Noten Trainer</h1>
   <p id="instruction" style="visibility: hidden; opacity: 0;">Spiele den Ton auf dem <span id="instrumentName">Saxophon</span>:</p>
   <div class="container">
     <!--------------- BURGER MENU ------------------>
@@ -36,11 +38,7 @@
       </div>
       <div class="checkbox-text">
         <label id="languageSelectorLabel" for="languageSelector">Sprache</label>
-        <select id="languageSelector">
-          <option value="de">Deutsch</option>
-          <option value="en">English</option>
-          <option value="it">Italiano</option>
-        </select>
+        <select id="languageSelector"></select>
       </div>
       <div id="instrumentTuningDiv" class="option-heading">Instrumenten Stimmung:</div>
       <div class="options-radio-one-line">
@@ -105,7 +103,7 @@
   </div>
   <!------------------------------ SCRIPT ----------------------------------->
   <script src="crepe/tfjs-0.8.0.min.js"></script>
-  <script src="MusicTrainer.js"></script>
+  <script src="NoteTrainer.js"></script>
   <script>
     window.addEventListener('load', loadOptions); // Load options when the page loads
   </script>

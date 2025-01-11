@@ -7,305 +7,6 @@
  - 
 */
  
-const allNotes_regular = [
-  { name: "C6", frequency: 1046.50, mp3: "piano/C6.mp3", position: 140 },
-  { name: "H5", frequency: 987.77, mp3: "piano/B5.mp3", position: 130 },
-  { name: "B5", frequency: 932.33, mp3: "piano/A5di.mp3", position: 130 },
-  { name: "A#5", frequency: 932.33, mp3: "piano/A5di.mp3", position: 120 },
-  { name: "A5", frequency: 880.00, mp3: "piano/A5.mp3", position: 120 },
-  { name: "Ab5", frequency: 830.61, mp3: "piano/G5di.mp3", position: 120 },
-  { name: "G#5", frequency: 830.61, mp3: "piano/G5di.mp3", position: 110 },
-  { name: "G5", frequency: 783.99, mp3: "piano/G5.mp3", position: 110 },
-  { name: "Gb5", frequency: 739.99, mp3: "piano/F5di.mp3", position: 110 },
-  { name: "F#5", frequency: 739.99, mp3: "piano/F5di.mp3", position: 100 },
-  { name: "F5", frequency: 698.46, mp3: "piano/F5.mp3", position: 100 },
-  { name: "E5", frequency: 659.25, mp3: "piano/E5.mp3", position: 90 },
-  { name: "Eb5", frequency: 622.25, mp3: "piano/D5di.mp3", position: 90 },
-  { name: "D#5", frequency: 622.25, mp3: "piano/D5di.mp3", position: 80 },
-  { name: "D5", frequency: 587.33, mp3: "piano/D5.mp3", position: 80 },
-  { name: "Db5", frequency: 554.37, mp3: "piano/C5di.mp3", position: 80 },
-  { name: "C#5", frequency: 554.37, mp3: "piano/C5di.mp3", position: 70 },
-  { name: "C5", frequency: 523.25, mp3: "piano/C5.mp3", position: 70 },
-  { name: "H4", frequency: 493.88, mp3: "piano/B4.mp3", position: 60 },
-  { name: "B4", frequency: 466.16, mp3: "piano/A4di.mp3", position: 60 },
-  { name: "A#4", frequency: 466.16, mp3: "piano/A4di.mp3", position: 50 },
-  { name: "A4", frequency: 440.00, mp3: "piano/A4.mp3", position: 50 },
-  { name: "Ab4", frequency: 415.30, mp3: "piano/G4di.mp3", position: 50 },
-  { name: "G#4", frequency: 415.30, mp3: "piano/G4di.mp3", position: 40 },
-  { name: "G4", frequency: 392.00, mp3: "piano/G4.mp3", position: 40 },
-  { name: "Gb4", frequency: 369.99, mp3: "piano/F4di.mp3", position: 40 },
-  { name: "F#4", frequency: 369.99, mp3: "piano/F4di.mp3", position: 30 },
-  { name: "F4", frequency: 349.23, mp3: "piano/F4.mp3", position: 30 },
-  { name: "E4", frequency: 329.63, mp3: "piano/E4.mp3", position: 20 },
-  { name: "Eb4", frequency: 311.13, mp3: "piano/D4di.mp3", position: 20 },
-  { name: "D#4", frequency: 311.13, mp3: "piano/D4di.mp3", position: 10 },
-  { name: "D4", frequency: 293.66, mp3: "piano/D4.mp3", position: 10 },
-  { name: "Db4", frequency: 277.18, mp3: "piano/C4di.mp3", position: 10 },
-  { name: "C#4", frequency: 277.18, mp3: "piano/C4di.mp3", position: 0 },
-  { name: "C4", frequency: 261.63, mp3: "piano/C4.mp3", position: 0 }, // Positioned for middle C
-  { name: "H3", frequency: 246.94, mp3: "piano/B3.mp3", position: -10 },
-  { name: "B3", frequency: 233.08, mp3: "piano/A3di.mp3", position: -10 },
-  { name: "A#3", frequency: 233.08, mp3: "piano/A3di.mp3", position: -20 },
-  { name: "A3", frequency: 220.00, mp3: "piano/A3.mp3", position: -20 },
-  { name: "Ab3", frequency: 207.65, mp3: "piano/G3di.mp3", position: -20 },
-  { name: "G#3", frequency: 207.65, mp3: "piano/G3di.mp3", position: -30 },
-  { name: "G3", frequency: 196.00, mp3: "piano/G3.mp3", position: -30 },
-  { name: "Gb3", frequency: 185.00, mp3: "piano/F3di.mp3", position: -30 },
-  { name: "F#3", frequency: 185.00, mp3: "piano/F3di.mp3", position: -40 },
-  { name: "F3", frequency: 174.61, mp3: "piano/F3.mp3", position: -40 },
-  { name: "E3", frequency: 164.81, mp3: "piano/E3.mp3", position: -50 },
-  { name: "Eb3", frequency: 155.56, mp3: "piano/D3di.mp3", position: -50 },
-  { name: "D#3", frequency: 155.56, mp3: "piano/D3di.mp3", position: -60 },
-  { name: "D3", frequency: 146.83, mp3: "piano/D3.mp3", position: -60 },
-  { name: "Db3", frequency: 138.59, mp3: "piano/C3di.mp3", position: -60 },
-  { name: "C#3", frequency: 138.59, mp3: "piano/C3di.mp3", position: -70 },
-  { name: "C3", frequency: 130.81, mp3: "piano/C3.mp3", position: -70 },
-  { name: "H2", frequency: 123.47, mp3: "piano/B2.mp3", position: -80 },
-  { name: "B2", frequency: 116.54, mp3: "piano/A2di.mp3", position: -80 },
-  { name: "A#2", frequency: 116.54, mp3: "piano/A2di.mp3", position: -90 },
-  { name: "A2", frequency: 110.00, mp3: "piano/A2.mp3", position: -90 },
-  { name: "Ab2", frequency: 103.83, mp3: "piano/G2di.mp3", position: -90 },
-  { name: "G#2", frequency: 103.83, mp3: "piano/G2di.mp3", position: -100 },
-  { name: "G2", frequency: 98.00, mp3: "piano/G2.mp3", position: -100 },
-  { name: "Gb2", frequency: 92.50, mp3: "piano/F2di.mp3", position: -100 },
-  { name: "F#2", frequency: 92.50, mp3: "piano/F2di.mp3", position: -110 },
-  { name: "F2", frequency: 87.31, mp3: "piano/F2.mp3", position: -110 },
-  { name: "E2", frequency: 82.41, mp3: "piano/E2.mp3", position: -120 },
-  { name: "Eb2", frequency: 77.78, mp3: "piano/D2di.mp3", position: -120 },
-  { name: "D#2", frequency: 77.78, mp3: "piano/D2di.mp3", position: -130 },
-  { name: "D2", frequency: 73.42, mp3: "piano/D2.mp3", position: -130 },
-  { name: "Db2", frequency: 69.30, mp3: "piano/C2di.mp3", position: -130 },
-  { name: "C#2", frequency: 69.30, mp3: "piano/C2di.mp3", position: -140 },
-  { name: "C2", frequency: 65.41, mp3: "piano/C2.mp3", position: -140 },
-  { name: "H1", frequency: 61.74, mp3: "piano/B1.mp3", position: -150 },
-  { name: "B1", frequency: 58.27, mp3: "piano/A1di.mp3", position: -150 },
-  { name: "A#1", frequency: 58.27, mp3: "piano/A1di.mp3", position: -160 },
-  { name: "A1", frequency: 55.00, mp3: "piano/A1.mp3", position: -160 },
-  { name: "Ab1", frequency: 51.91, mp3: "piano/G1di.mp3", position: -160 },
-  { name: "G#1", frequency: 51.91, mp3: "piano/G1di.mp3", position: -170 },
-  { name: "G1", frequency: 49.00, mp3: "piano/G1.mp3", position: -170 },
-  { name: "Gb1", frequency: 46.25, mp3: "piano/F1di.mp3", position: -170 },
-  { name: "F#1", frequency: 46.25, mp3: "piano/F1di.mp3", position: -180 },
-  { name: "F1", frequency: 43.65, mp3: "piano/F1.mp3", position: -180 },
-  { name: "E1", frequency: 41.20, mp3: "piano/E1.mp3", position: -190 },
-  { name: "Eb1", frequency: 38.89, mp3: "piano/D1di.mp3", position: -190 },
-  { name: "D#1", frequency: 38.89, mp3: "piano/D1di.mp3", position: -200 },
-  { name: "D1", frequency: 36.71, mp3: "piano/D1.mp3", position: -200 },
-  { name: "Db1", frequency: 34.65, mp3: "piano/C1di.mp3", position: -200 },
-  { name: "C#1", frequency: 34.65, mp3: "piano/C1di.mp3", position: -210 },
-  { name: "C1", frequency: 32.70, mp3: "piano/C1.mp3", position: -210 }
-];
-const allNotes_sax_alt = [			
-  { name: "C7"	, frequency:  1244.50 ,	mp3: "saxAlt/C7.mp3"	, position:  210  },
-  { name: "H6"	, frequency:  1174.66 ,	mp3: "saxAlt/B6.mp3"	, position:  200  },
-  { name: "B6"	, frequency:  1108.74 ,	mp3: "saxAlt/A6di.mp3"	, position:  200  },
-  { name: "A#6"	, frequency:  1108.74 ,	mp3: "saxAlt/A6di.mp3"	, position:  190  },
-  { name: "A6"	, frequency:  1046.50 ,	mp3: "saxAlt/A6.mp3"	, position:  190  },
-  { name: "Ab6"	, frequency:  987.76 ,	mp3: "saxAlt/G6di.mp3"	, position:  190  },
-  { name: "G#6"	, frequency:  987.76 ,	mp3: "saxAlt/G6di.mp3"	, position:  180  },
-  { name: "G6"	, frequency:  932.32 ,	mp3: "saxAlt/G6.mp3"	, position:  180  },
-  { name: "Gb6"	, frequency:  880.00 ,	mp3: "saxAlt/F6di.mp3"	, position:  180  },
-  { name: "F#6"	, frequency:  880.00 ,	mp3: "saxAlt/F6di.mp3"	, position:  170  },
-  { name: "F6"	, frequency:  830.60 ,	mp3: "saxAlt/F6.mp3"	, position:  170  },
-  { name: "E6"	, frequency:  784.00 ,	mp3: "saxAlt/E6.mp3"	, position:  160  },
-  { name: "Eb6"	, frequency:  739.98 ,	mp3: "saxAlt/D6di.mp3"	, position:  160  },
-  { name: "D#6"	, frequency:  739.98 ,	mp3: "saxAlt/D6di.mp3"	, position:  150  },
-  { name: "D6"	, frequency:  698.46 ,	mp3: "saxAlt/D6.mp3"	, position:  150  },
-  { name: "Db6"	, frequency:  659.26 ,	mp3: "saxAlt/C6di.mp3"	, position:  150  },
-  { name: "C#6"	, frequency:  659.26 ,	mp3: "saxAlt/C6di.mp3"	, position:  140  },
-  { name: "C6"	, frequency:  622.25 ,	mp3: "saxAlt/C6.mp3"	, position:  140  },
-  { name: "H5"	, frequency:  587.33 ,	mp3: "saxAlt/B5.mp3"	, position:  130  },
-  { name: "B5"	, frequency:  554.37 ,	mp3: "saxAlt/A5di.mp3"	, position:  130  },
-  { name: "A#5"	, frequency:  554.37 ,	mp3: "saxAlt/A5di.mp3"	, position:  120  },
-  { name: "A5"	, frequency:  523.25 ,	mp3: "saxAlt/A5.mp3"	, position:  120  },
-  { name: "Ab5"	, frequency:  493.88 ,	mp3: "saxAlt/G5di.mp3"	, position:  120  },
-  { name: "G#5"	, frequency:  493.88 ,	mp3: "saxAlt/G5di.mp3"	, position:  110  },
-  { name: "G5"	, frequency:  466.16 ,	mp3: "saxAlt/G5.mp3"	, position:  110  },
-  { name: "Gb5"	, frequency:  440.00 ,	mp3: "saxAlt/F5di.mp3"	, position:  110  },
-  { name: "F#5"	, frequency:  440.00 ,	mp3: "saxAlt/F5di.mp3"	, position:  100  },
-  { name: "F5"	, frequency:  415.30 ,	mp3: "saxAlt/F5.mp3"	, position:  100  },
-  { name: "E5"	, frequency:  392.00 ,	mp3: "saxAlt/E5.mp3"	, position:  90  },
-  { name: "Eb5"	, frequency:  369.99 ,	mp3: "saxAlt/D5di.mp3"	, position:  90  },
-  { name: "D#5"	, frequency:  369.99 ,	mp3: "saxAlt/D5di.mp3"	, position:  80  },
-  { name: "D5"	, frequency:  349.23 ,	mp3: "saxAlt/D5.mp3"	, position:  80  },
-  { name: "Db5"	, frequency:  329.63 ,	mp3: "saxAlt/C5di.mp3"	, position:  80  },
-  { name: "C#5"	, frequency:  329.63 ,	mp3: "saxAlt/C5di.mp3"	, position:  70  },
-  { name: "C5"	, frequency:  311.13 ,	mp3: "saxAlt/C5.mp3"	, position:  70  },
-  { name: "H4"	, frequency:  293.66 ,	mp3: "saxAlt/B4.mp3"	, position:  60  },
-  { name: "B4"	, frequency:  277.18 ,	mp3: "saxAlt/A4di.mp3"	, position:  60  },
-  { name: "A#4"	, frequency:  277.18 ,	mp3: "saxAlt/A4di.mp3"	, position:  50  },
-  { name: "A4"	, frequency:  261.63 ,	mp3: "saxAlt/A4.mp3"	, position:  50  },
-  { name: "Ab4"	, frequency:  246.94 ,	mp3: "saxAlt/G4di.mp3"	, position:  50  },
-  { name: "G#4"	, frequency:  246.94 ,	mp3: "saxAlt/G4di.mp3"	, position:  40  },
-  { name: "G4"	, frequency:  233.08 ,	mp3: "saxAlt/G4.mp3"	, position:  40  },
-  { name: "Gb4"	, frequency:  220.00 ,	mp3: "saxAlt/F4di.mp3"	, position:  40  },
-  { name: "F#4"	, frequency:  220.00 ,	mp3: "saxAlt/F4di.mp3"	, position:  30  },
-  { name: "F4"	, frequency:  207.65 ,	mp3: "saxAlt/F4.mp3"	, position:  30  },
-  { name: "E4"	, frequency:  196.00 ,	mp3: "saxAlt/E4.mp3"	, position:  20  },
-  { name: "Eb4"	, frequency:  185.00 ,	mp3: "saxAlt/D4di.mp3"	, position:  20  },
-  { name: "D#4"	, frequency:  185.00 ,	mp3: "saxAlt/D4di.mp3"	, position:  10  },
-  { name: "D4"	, frequency:  174.61 ,	mp3: "saxAlt/D4.mp3"	, position:  10  },
-  { name: "Db4"	, frequency:  164.81 ,	mp3: "saxAlt/C4di.mp3"	, position:  10  },
-  { name: "C#4"	, frequency:  164.81 ,	mp3: "saxAlt/C4di.mp3"	, position:  0  },
-  { name: "C4"	, frequency:  155.56 ,	mp3: "saxAlt/C4.mp3"	, position:  0  },
-  { name: "H3"	, frequency:  146.83 ,	mp3: "saxAlt/C4di.mp3"	, position: -10  },
-  { name: "B3"	, frequency:  138.59 ,	mp3: "saxAlt/A3di.mp3"	, position: -10  },
-  { name: "A#3"	, frequency:  138.59 ,	mp3: "saxAlt/A3di.mp3"	, position: -20  },
-  { name: "A3"	, frequency:  130.81 ,	mp3: "saxAlt/A3.mp3"	, position: -20  },
-  { name: "Ab3"	, frequency:  123.47 ,	mp3: "saxAlt/G3di.mp3"	, position: -20  },
-  { name: "G#3"	, frequency:  123.47 ,	mp3: "saxAlt/G3di.mp3"	, position: -30  },
-  { name: "G3"	, frequency:  116.54 ,	mp3: "saxAlt/G3.mp3"	, position: -30  },
-  { name: "Gb3"	, frequency:  110.00 ,	mp3: "saxAlt/F3di.mp3"	, position: -30  },
-  { name: "F#3"	, frequency:  110.00 ,	mp3: "saxAlt/F3di.mp3"	, position: -40  },
-  { name: "F3"	, frequency:  103.83 ,	mp3: "saxAlt/F3.mp3"	, position: -40  },
-  { name: "E3"	, frequency:  98.00 ,	mp3: "saxAlt/E3.mp3"	, position: -50  },
-  { name: "Eb3"	, frequency:  92.50 ,	mp3: "saxAlt/D3di.mp3"	, position: -50  },
-  { name: "D#3"	, frequency:  92.50 ,	mp3: "saxAlt/D3di.mp3"	, position: -60  },
-  { name: "D3"	, frequency:  87.31 ,	mp3: "saxAlt/D3.mp3"	, position: -60  },
-  { name: "Db3"	, frequency:  82.41 ,	mp3: "saxAlt/C3di.mp3"	, position: -60  },
-  { name: "C#3"	, frequency:  82.41 ,	mp3: "saxAlt/C3di.mp3"	, position: -70  },
-  { name: "C3"	, frequency:  77.78 ,	mp3: "saxAlt/C3.mp3"	, position: -70  },
-  { name: "H2"	, frequency:  73.42 ,	mp3: "saxAlt/B2.mp3"	, position: -80  },
-  { name: "B2"	, frequency:  69.30 ,	mp3: "saxAlt/A2di.mp3"	, position: -80  },
-  { name: "A#2"	, frequency:  69.30 ,	mp3: "saxAlt/A2di.mp3"	, position: -90  },
-  { name: "A2"	, frequency:  65.41 ,	mp3: "saxAlt/A2.mp3"	, position: -90  },
-  { name: "Ab2"	, frequency:  61.74 ,	mp3: "saxAlt/G2di.mp3"	, position: -90  },
-  { name: "G#2"	, frequency:  61.74 ,	mp3: "saxAlt/G2di.mp3"	, position: -100  },
-  { name: "G2"	, frequency:  58.27 ,	mp3: "saxAlt/G2.mp3"	, position: -100  },
-  { name: "Gb2"	, frequency:  55.00 ,	mp3: "saxAlt/F2di.mp3"	, position: -100  },
-  { name: "F#2"	, frequency:  55.00 ,	mp3: "saxAlt/F2di.mp3"	, position: -110  },
-  { name: "F2"	, frequency:  51.91 ,	mp3: "saxAlt/F2.mp3"	, position: -110  },
-  { name: "E2"	, frequency:  49.00 ,	mp3: "saxAlt/E2.mp3"	, position: -120  },
-  { name: "Eb2"	, frequency:  46.25 ,	mp3: "saxAlt/D2di.mp3"	, position: -120  },
-  { name: "D#2"	, frequency:  46.25 ,	mp3: "saxAlt/D2di.mp3"	, position: -130  },
-  { name: "D2"	, frequency:  43.65 ,	mp3: "saxAlt/D2.mp3"	, position: -130  },
-  { name: "Db2"	, frequency:  41.20 ,	mp3: "saxAlt/C2di.mp3"	, position: -130  },
-  { name: "C#2"	, frequency:  41.20 ,	mp3: "saxAlt/C2di.mp3"	, position: -140  },
-  { name: "C2"	, frequency:  38.89 ,	mp3: "saxAlt/C2.mp3"	, position: -140  },
-  { name: "H1"	, frequency:  36.71 ,	mp3: "saxAlt/B1.mp3"	, position: -150  },
-  { name: "B1"	, frequency:  34.65 ,	mp3: "saxAlt/A1di.mp3"	, position: -150  },
-  { name: "A#1"	, frequency:  34.65 ,	mp3: "saxAlt/A1di.mp3"	, position: -160  },
-  { name: "A1"	, frequency:  32.70 ,	mp3: "saxAlt/A1.mp3"	, position: -160  },
-  { name: "Ab1"	, frequency:  30.87 ,	mp3: "saxAlt/G1di.mp3"	, position: -160  },
-  { name: "G#1"	, frequency:  30.87 ,	mp3: "saxAlt/G1di.mp3"	, position: -170  },
-  { name: "G1"	, frequency:  29.14 ,	mp3: "saxAlt/G1.mp3"	, position: -170  },
-  { name: "Gb1"	, frequency:  27.50 ,	mp3: "saxAlt/F1di.mp3"	, position: -170  },
-  { name: "F#1"	, frequency:  27.50 ,	mp3: "saxAlt/F1di.mp3"	, position: -180  },
-  { name: "F1"	, frequency:  25.96 ,	mp3: "saxAlt/F1.mp3"	, position: -180  },
-  { name: "E1"	, frequency:  24.50 ,	mp3: "saxAlt/E1.mp3"	, position: -190  },
-  { name: "Eb1"	, frequency:  23.13 ,	mp3: "saxAlt/D1di.mp3"	, position: -190  },
-  { name: "D#1"	, frequency:  23.13 ,	mp3: "saxAlt/D1di.mp3"	, position: -200  },
-  { name: "D1"	, frequency:  21.83 ,	mp3: "saxAlt/D1.mp3"	, position: -200  },
-  { name: "Db1"	, frequency:  20.60 ,	mp3: "saxAlt/C1di.mp3"	, position: -200  },
-  { name: "C#1"	, frequency:  20.60 ,	mp3: "saxAlt/C1di.mp3"	, position: -210  },
-  { name: "C1"	, frequency:  19.45 ,	mp3: "saxAlt/C1.mp3"	, position: -210  }
-];			   
-const allNotes_sax_tenor = [			
-  { name: "C7", frequency: 932.33, mp3: "saxTenor/C7.mp3", position: 210 },
-  { name: "H6", frequency: 880.00, mp3: "saxTenor/B6.mp3", position: 200 },
-  { name: "B6", frequency: 830.61, mp3: "saxTenor/A6di.mp3", position: 200 },
-  { name: "A#6", frequency: 830.61, mp3: "saxTenor/A6di.mp3", position: 190 },
-  { name: "A6", frequency: 783.99, mp3: "saxTenor/A6.mp3", position: 190 },
-  { name: "Ab6", frequency: 739.99, mp3: "saxTenor/G6di.mp3", position: 190 },
-  { name: "G#6", frequency: 739.99, mp3: "saxTenor/G6di.mp3", position: 180 },
-  { name: "G6", frequency: 698.46, mp3: "saxTenor/G6.mp3", position: 180 },
-  { name: "Gb6", frequency: 659.25, mp3: "saxTenor/F6di.mp3", position: 180 },
-  { name: "F#6", frequency: 659.25, mp3: "saxTenor/F6di.mp3", position: 170 },
-  { name: "F6", frequency: 622.25, mp3: "saxTenor/F6.mp3", position: 170 },
-  { name: "E6", frequency: 587.33, mp3: "saxTenor/E6.mp3", position: 160 },
-  { name: "Eb6", frequency: 554.37, mp3: "saxTenor/D6di.mp3", position: 160 },
-  { name: "D#6", frequency: 554.37, mp3: "saxTenor/D6di.mp3", position: 150 },
-  { name: "D6", frequency: 523.25, mp3: "saxTenor/D6.mp3", position: 150 },
-  { name: "Db6", frequency: 493.88, mp3: "saxTenor/C6di.mp3", position: 150 },
-  { name: "C#6", frequency: 493.88, mp3: "saxTenor/C6di.mp3", position: 140 },
-  { name: "C6", frequency: 466.16, mp3: "saxTenor/C6.mp3", position: 140 },
-  { name: "H5", frequency: 440.00, mp3: "saxTenor/B5.mp3", position: 130 },
-  { name: "B5", frequency: 415.30, mp3: "saxTenor/A5di.mp3", position: 130 },
-  { name: "A#5", frequency: 415.30, mp3: "saxTenor/A5di.mp3", position: 120 },
-  { name: "A5", frequency: 392.00, mp3: "saxTenor/A5.mp3", position: 120 },
-  { name: "Ab5", frequency: 369.99, mp3: "saxTenor/G5di.mp3", position: 120 },
-  { name: "G#5", frequency: 369.99, mp3: "saxTenor/G5di.mp3", position: 110 },
-  { name: "G5", frequency: 349.23, mp3: "saxTenor/G5.mp3", position: 110 },
-  { name: "Gb5", frequency: 329.63, mp3: "saxTenor/F5di.mp3", position: 110 },
-  { name: "F#5", frequency: 329.63, mp3: "saxTenor/F5di.mp3", position: 100 },
-  { name: "F5", frequency: 311.13, mp3: "saxTenor/F5.mp3", position: 100 },
-  { name: "E5", frequency: 293.66, mp3: "saxTenor/E5.mp3", position: 90 },
-  { name: "Eb5", frequency: 277.18, mp3: "saxTenor/D5di.mp3", position: 90 },
-  { name: "D#5", frequency: 277.18, mp3: "saxTenor/D5di.mp3", position: 80 },
-  { name: "D5", frequency: 261.63, mp3: "saxTenor/D5.mp3", position: 80 },
-  { name: "Db5", frequency: 246.94, mp3: "saxTenor/C5di.mp3", position: 80 },
-  { name: "C#5", frequency: 246.94, mp3: "saxTenor/C5di.mp3", position: 70 },
-  { name: "C5", frequency: 233.08, mp3: "saxTenor/C5.mp3", position: 70 },
-  { name: "H4", frequency: 220.00, mp3: "saxTenor/B4.mp3", position: 60 },
-  { name: "B4", frequency: 207.65, mp3: "saxTenor/A4di.mp3", position: 60 },
-  { name: "A#4", frequency: 207.65, mp3: "saxTenor/A4di.mp3", position: 50 },
-  { name: "A4", frequency: 196.00, mp3: "saxTenor/A4.mp3", position: 50 },
-  { name: "Ab4", frequency: 185.00, mp3: "saxTenor/G4di.mp3", position: 50 },
-  { name: "G#4", frequency: 185.00, mp3: "saxTenor/G4di.mp3", position: 40 },
-  { name: "G4", frequency: 174.61, mp3: "saxTenor/G4.mp3", position: 40 },
-  { name: "Gb4", frequency: 164.81, mp3: "saxTenor/F4di.mp3", position: 40 },
-  { name: "F#4", frequency: 164.81, mp3: "saxTenor/F4di.mp3", position: 30 },
-  { name: "F4", frequency: 155.56, mp3: "saxTenor/F4.mp3", position: 30 },
-  { name: "E4", frequency: 146.83, mp3: "saxTenor/E4.mp3", position: 20 },
-  { name: "Eb4", frequency: 138.59, mp3: "saxTenor/D4di.mp3", position: 20 },
-  { name: "D#4", frequency: 138.59, mp3: "saxTenor/D4di.mp3", position: 10 },
-  { name: "D4", frequency: 130.81, mp3: "saxTenor/D4.mp3", position: 10 },
-  { name: "Db4", frequency: 123.47, mp3: "saxTenor/C4di.mp3", position: 10 },
-  { name: "C#4", frequency: 123.47, mp3: "saxTenor/C4di.mp3", position: 0 },
-  { name: "C4", frequency: 116.54, mp3: "saxTenor/C4.mp3", position: 0 },
-  { name: "H3", frequency: 110.00, mp3: "saxTenor/B3.mp3", position: -10 },
-  { name: "B3", frequency: 103.83, mp3: "saxTenor/A3di.mp3", position: -10 },
-  { name: "A#3", frequency: 103.83, mp3: "saxTenor/A3di.mp3", position: -20 },
-  { name: "A3", frequency: 98.00, mp3: "saxTenor/A3.mp3", position: -20 },
-  { name: "Ab3", frequency: 92.50, mp3: "saxTenor/G3di.mp3", position: -20 },
-  { name: "G#3", frequency: 92.50, mp3: "saxTenor/G3di.mp3", position: -30 },
-  { name: "G3", frequency: 87.31, mp3: "saxTenor/G3.mp3", position: -30 },
-  { name: "Gb3", frequency: 82.41, mp3: "saxTenor/F3di.mp3", position: -30 },
-  { name: "F#3", frequency: 82.41, mp3: "saxTenor/F3di.mp3", position: -40 },
-  { name: "F3", frequency: 77.78, mp3: "saxTenor/F3.mp3", position: -40 },
-  { name: "E3", frequency: 73.42, mp3: "saxTenor/E3.mp3", position: -50 },
-  { name: "Eb3", frequency: 69.30, mp3: "saxTenor/D3di.mp3", position: -50 },
-  { name: "D#3", frequency: 69.30, mp3: "saxTenor/D3di.mp3", position: -60 },
-  { name: "D3", frequency: 65.41, mp3: "saxTenor/D3.mp3", position: -60 },
-  { name: "Db3", frequency: 61.74, mp3: "saxTenor/C3di.mp3", position: -60 },
-  { name: "C#3", frequency: 61.74, mp3: "saxTenor/C3di.mp3", position: -70 },
-  { name: "C3", frequency: 58.27, mp3: "saxTenor/C3.mp3", position: -70 },
-  { name: "H2", frequency: 55.00, mp3: "saxTenor/B2.mp3", position: -80 },
-  { name: "B2", frequency: 51.91, mp3: "saxTenor/A2di.mp3", position: -80 },
-  { name: "A#2", frequency: 51.91, mp3: "saxTenor/A2di.mp3", position: -90 },
-  { name: "A2", frequency: 49.00, mp3: "saxTenor/A2.mp3", position: -90 },
-  { name: "Ab2", frequency: 46.25, mp3: "saxTenor/G2di.mp3", position: -90 },
-  { name: "G#2", frequency: 46.25, mp3: "saxTenor/G2di.mp3", position: -100 },
-  { name: "G2", frequency: 43.65, mp3: "saxTenor/G2.mp3", position: -100 },
-  { name: "Gb2", frequency: 41.20, mp3: "saxTenor/F2di.mp3", position: -100 },
-  { name: "F#2", frequency: 41.20, mp3: "saxTenor/F2di.mp3", position: -110 },
-  { name: "F2", frequency: 38.89, mp3: "saxTenor/F2.mp3", position: -110 },
-  { name: "E2", frequency: 36.71, mp3: "saxTenor/E2.mp3", position: -120 },
-  { name: "Eb2", frequency: 34.65, mp3: "saxTenor/D2di.mp3", position: -120 },
-  { name: "D#2", frequency: 34.65, mp3: "saxTenor/D2di.mp3", position: -130 },
-  { name: "D2", frequency: 32.70, mp3: "saxTenor/D2.mp3", position: -130 },
-  { name: "Db2", frequency: 30.87, mp3: "saxTenor/C2di.mp3", position: -130 },
-  { name: "C#2", frequency: 30.87, mp3: "saxTenor/C2di.mp3", position: -140 },
-  { name: "C2", frequency: 29.14, mp3: "saxTenor/C2.mp3", position: -140 },
-  { name: "H1", frequency: 27.50, mp3: "saxTenor/B1.mp3", position: -150 },
-  { name: "B1", frequency: 25.96, mp3: "saxTenor/A1di.mp3", position: -150 },
-  { name: "A#1", frequency: 25.96, mp3: "saxTenor/A1di.mp3", position: -160 },
-  { name: "A1", frequency: 24.50, mp3: "saxTenor/A1.mp3", position: -160 },
-  { name: "Ab1", frequency: 23.13, mp3: "saxTenor/G1di.mp3", position: -160 },
-  { name: "G#1", frequency: 23.13, mp3: "saxTenor/G1di.mp3", position: -170 },
-  { name: "G1", frequency: 21.83, mp3: "saxTenor/G1.mp3", position: -170 },
-  { name: "Gb1", frequency: 20.60, mp3: "saxTenor/F1di.mp3", position: -170 },
-  { name: "F#1", frequency: 20.60, mp3: "saxTenor/F1di.mp3", position: -180 },
-  { name: "F1", frequency: 19.45, mp3: "saxTenor/F1.mp3", position: -180 },
-  { name: "E1", frequency: 18.36, mp3: "saxTenor/E1.mp3", position: -190 },
-  { name: "Eb1", frequency: 17.33, mp3: "saxTenor/D1di.mp3", position: -190 },
-  { name: "D#1", frequency: 17.33, mp3: "saxTenor/D1di.mp3", position: -200 },
-  { name: "D1", frequency: 16.35, mp3: "saxTenor/D1.mp3", position: -200 },
-  { name: "Db1", frequency: 15.44, mp3: "saxTenor/C1di.mp3", position: -200 },
-  { name: "C#1", frequency: 15.44, mp3: "saxTenor/C1di.mp3", position: -210 },
-  { name: "C1", frequency: 14.57, mp3: "saxTenor/C1.mp3", position: -210 }
-];
-
 /*--------- Last Settings  --------------------------*/
 // Load saved options from localStorage
 function loadOptions() {
@@ -327,6 +28,7 @@ function loadOptions() {
   noteFilterCheckbox.checked = JSON.parse(localStorage.getItem("noteFilterCheckbox")) || false;
   noteFilterInput.value = localStorage.getItem("noteFilterInput") || "C D E F G A H";
   noteFilterInput.disabled = !noteFilterCheckbox.checked;
+  initLanguages();
   updateTexts(); 
   updateInstrument();
   setSelectedNotes();
@@ -458,11 +160,11 @@ function setOptionEnableState(state){ //no longer in use
 
 function handleButtons(force = false) {
   if(running || force) {
-    startButton.textContent = getMessage("main", "continue"); // Change button text to "Weiter"
+    startButton.textContent = getText("main", "continue"); // Change button text to "Weiter"
     startButton.style.backgroundColor = "gray"; // Change button color to gray
     stopButton.style.display = "block";
   } else {
-    startButton.textContent = getMessage("main", "startButton"); // Change button text to "Start"
+    startButton.textContent = getText("main", "startButton"); // Change button text to "Start"
     startButton.style.backgroundColor = "green"; // Change button color to gray
     stopButton.style.display = "none";
   }  
@@ -474,13 +176,13 @@ function updateInstrument() {
   const instrumentName = document.getElementById('instrumentName');
   if (instrumentSaxTenorRadio.checked) {
     instrumentImage.src = 'images/saxTenor.png';
-    instrumentName.innerHTML = getMessage("options", "instrumentSaxTenorRadio"); 
+    instrumentName.innerHTML = getText("options", "instrumentSaxTenorRadio"); 
   } else if (instrumentSaxAltRadio.checked) {
     instrumentImage.src = 'images/saxAlt.png';
-    instrumentName.innerHTML = getMessage("options", "instrumentSaxAltRadio"); 
+    instrumentName.innerHTML = getText("options", "instrumentSaxAltRadio"); 
   } else {
     instrumentImage.src = 'images/piano.png';
-    instrumentName.innerHTML = getMessage("options", "instrumentRegularRadio"); 
+    instrumentName.innerHTML = getText("options", "instrumentRegularRadio"); 
   }
   instrumentImage.style.visibility = 'visible'; 
   instrumentImage.style.opacity = '1';
@@ -778,7 +480,7 @@ function initAudio() {
 }
 
 function handleAudio(stream){
-  status(getMessage("messages", "activating"));
+  status(getText("texts", "activating"));
   console.log('Audio context sample rate = ' + audioContext.sampleRate);
   const mic = audioContext.createMediaStreamSource(stream);
   // We need the buffer size that is a power of two and is longer than 1024 samples when resampled to 16000 Hz.
@@ -796,15 +498,15 @@ function handleAudio(stream){
   scriptNode.connect(gain);
   gain.connect(audioContext.destination);
   if (audioContext.state === 'running') {
-    status(getMessage("messages", "starting"));
+    status(getText("texts", "starting"));
   }
 }
 
 async function loadModel() {
   if(!running){
-    status(getMessage("messages", "loadingModel"));
+    status(getText("texts", "loadingModel"));
     model = await tf.loadModel('https://marl.github.io/crepe/model/model.json');
-    status(getMessage("messages", "modelLoaded"));
+    status(getText("texts", "modelLoaded"));
   }
 }
 
@@ -886,7 +588,7 @@ function checkNote(detectedFrequency) {
           noteStatistics[currentNote.name].correct++;
         }
         correctNotePlayed = true; 
-        status("<span class='message-green'>" + getMessage("messages", "correct", {note: closestNoteName}) + "</span>");
+        status("<span class='message-green'>" + getText("texts", "correct", {note: closestNoteName}) + "</span>");
         highlightNote(true);
         toneNamePrevious = currentNote.name;
         if(pauseCheckbox.checked){
@@ -900,7 +602,7 @@ function checkNote(detectedFrequency) {
       } else { //INCORRECT          
         if (!correctNotePlayed && ((closestNoteName != toneNamePrevious) || decayTimeoutReached)) { //if a tone was played correctly, discard any wrong notes after that. We enforce different proposed notes so will discard a previous note played again.
           if(closestNoteName === currentNote.name){sign(frequencyDifference) === 1 ? closestNoteName = closestNoteName + "+" : closestNoteName = "-" + closestNoteName;} 
-          status("<span class='message-red'>" + getMessage("messages", "incorrect", {note: closestNoteName}) + "</span>" + (showNoteNameCheckbox.checked ? getMessage("messages", "desiredNote", {note: currentNote.name}) : getMessage("messages", "tryAgain")));
+          status("<span class='message-red'>" + getText("texts", "incorrect", {note: closestNoteName}) + "</span>" + (showNoteNameCheckbox.checked ? getText("texts", "desiredNote", {note: currentNote.name}) : getText("texts", "tryAgain")));
           if(!toneWeighted){
             updateWeightedNoteNames(currentNote.name, "increment");
             noteStatistics[currentNote.name].incorrect++;
@@ -912,7 +614,7 @@ function checkNote(detectedFrequency) {
       silence = false;
     } else {
       if(!triedOnce){
-        status("<span class='message-red'>" + getMessage("messages", "playNote") + (showNoteNameCheckbox.checked ? "</span>" + getMessage("messages", "desiredNote", {note: currentNote.name}) : "</span>"));
+        status("<span class='message-red'>" + getText("texts", "playNote") + (showNoteNameCheckbox.checked ? "</span>" + getText("texts", "desiredNote", {note: currentNote.name}) : "</span>"));
       }  
       silence = true; // triggers a new checking interval
     }
@@ -964,7 +666,7 @@ function getNextNote() {
 // Function to show the pop-up dialog with the pie chart
 function showSummary() {
   const summaryHeading = document.getElementById('summaryHeading');
-  summaryHeading.textContent = getMessage("summary", "summaryHeading");
+  summaryHeading.textContent = getText("summary", "summaryHeading");
   const correctNotes = Object.values(noteStatistics).reduce((sum, stats) => sum + stats.correct, 0);
   const incorrectNotes = Object.values(noteStatistics).reduce((sum, stats) => sum + stats.incorrect, 0);
   // Check if there are any correct or incorrect notes
@@ -996,9 +698,9 @@ function showSummary() {
   //summary message
   const summaryMessage = document.getElementById('summaryMessage');
   if(incorrectNotes){
-    summaryMessage.innerHTML = getMessage("summary", "summaryMessage");
+    summaryMessage.innerHTML = getText("summary", "summaryMessage");
   } else {
-    summaryMessage.innerHTML = getMessage("summary", "successMessage"); 
+    summaryMessage.innerHTML = getText("summary", "successMessage"); 
   }
   // Create ranked list of incorrectly played notes
   const rankedListContainer = document.getElementById('rankedListContainer');
@@ -1015,7 +717,7 @@ function showSummary() {
   });
   rankedListContainer.appendChild(rankedList);
   const closeButton = document.getElementById('closeButton');
-  closeButton.textContent = getMessage("summary", "closeButton");
+  closeButton.textContent = getText("summary", "closeButton");
   document.getElementById('statisticsDialog').style.display = 'block';
 }
 
@@ -1036,267 +738,73 @@ document.getElementById('languageSelector').addEventListener('change', (event) =
 
 function updateTexts() {
   //MAIN GUI
-  document.getElementById('title').textContent = getMessage('main', 'title');
-  document.getElementById('instruction').innerHTML = getMessage('main', 'instruction'); //, { instrument: document.getElementById('instrumentName').textContent });
+  document.getElementById('title').textContent = getText('main', 'title');
+  document.getElementById('instruction').innerHTML = getText('main', 'instruction'); //, { instrument: document.getElementById('instrumentName').textContent });
   updateInstrument();
   handleButtons();
   //OPTIONS
-  document.getElementById('optionsTitle').childNodes[0].textContent = getMessage('options', 'optionsTitle');
-  document.getElementById('showNoteNameCheckboxLabel').childNodes[1].textContent = getMessage('options', 'showNoteNameCheckbox');
-  document.getElementById('showNoteNameCheckboxLabel').title = getMessage('tooltips', 'showNoteNameCheckboxLabel');
-  document.getElementById('playNoteCheckboxLabel').childNodes[1].textContent = getMessage('options', 'playNoteCheckbox');
-  document.getElementById('playNoteCheckboxLabel').title = getMessage('tooltips', 'playNoteCheckboxLabel');
-  document.getElementById('useBassClefCheckboxLabel').childNodes[1].textContent = getMessage('options', 'useBassClefCheckbox');
-  document.getElementById('useBassClefCheckboxLabel').title = getMessage('tooltips', 'useBassClefCheckboxLabel');
-  document.getElementById('showSummaryCheckboxLabel').childNodes[1].textContent = getMessage('options', 'showSummaryCheckbox');
-  document.getElementById('showSummaryCheckboxLabel').title = getMessage('tooltips', 'showSummaryCheckboxLabel');
-  document.getElementById('pauseCheckboxLabel').childNodes[1].textContent = getMessage('options', 'pauseInput');
-  document.getElementById('pauseCheckboxLabel').title = getMessage('tooltips', 'pauseCheckboxLabel');
-  document.getElementById('toleranceInputLabel').childNodes[0].textContent = getMessage('options', 'toleranceInput');
-  document.getElementById('toleranceInputLabel').title = getMessage('tooltips', 'toleranceInputLabel');
-  document.getElementById('instrumentSaxTenorRadioLabel').childNodes[1].textContent = getMessage('options', 'instrumentSaxTenorRadio');
-  document.getElementById('instrumentSaxTenorRadioLabel').title = getMessage('tooltips', 'instrumentSaxTenorRadioLabel');
-  document.getElementById('instrumentSaxAltRadioLabel').childNodes[1].textContent = getMessage('options', 'instrumentSaxAltRadio');
-  document.getElementById('instrumentSaxAltRadioLabel').title = getMessage('tooltips', 'instrumentSaxAltRadioLabel');
-  document.getElementById('instrumentRegularRadioLabel').childNodes[1].textContent = getMessage('options', 'instrumentRegularRadio');
-  document.getElementById('instrumentRegularRadioLabel').title = getMessage('tooltips', 'instrumentRegularRadioLabel');
-  document.getElementById('smallRangeRadioLabel').childNodes[1].textContent = getMessage('options', 'smallRangeRadio');
-  document.getElementById('smallRangeRadioLabel').title = getMessage('tooltips', 'smallRangeRadioLabel');
-  document.getElementById('middleRangeRadioLabel').childNodes[1].textContent = getMessage('options', 'middleRangeRadio');
-  document.getElementById('middleRangeRadioLabel').title = getMessage('tooltips', 'middleRangeRadioLabel');
-  document.getElementById('largeRangeRadioLabel').childNodes[1].textContent = getMessage('options', 'largeRangeRadio');
-  document.getElementById('largeRangeRadioLabel').title = getMessage('tooltips', 'largeRangeRadioLabel');
-  document.getElementById('noteFilterCheckboxLabel').childNodes[1].textContent = getMessage('options', 'noteFilterCheckbox');
-  document.getElementById('noteFilterCheckboxLabel').title = getMessage('tooltips', 'noteFilterCheckboxLabel');
-  document.getElementById('showSharpCheckboxLabel').childNodes[1].textContent = getMessage('options', 'showSharpCheckbox');
-  document.getElementById('showSharpCheckboxLabel').title = getMessage('tooltips', 'showSharpCheckboxLabel');
-  document.getElementById('showFlatCheckboxLabel').childNodes[1].textContent = getMessage('options', 'showFlatCheckbox');
-  document.getElementById('showFlatCheckboxLabel').title = getMessage('tooltips', 'showFlatCheckboxLabel');
-  document.getElementById('languageSelectorLabel').textContent = getMessage('options', 'languageSelector');
-  document.getElementById('instrumentTuningDiv').textContent = getMessage('options', 'instrumentTuning');
-  document.getElementById('noteRangeHeadingDiv').textContent = getMessage('options', 'noteRange');
-  document.getElementById('accidentalsDiv').textContent = getMessage('options', 'accidentals');
+  document.getElementById('optionsTitle').childNodes[0].textContent = getText('options', 'optionsTitle');
+  document.getElementById('showNoteNameCheckboxLabel').childNodes[1].textContent = getText('options', 'showNoteNameCheckbox');
+  document.getElementById('showNoteNameCheckboxLabel').title = getText('tooltips', 'showNoteNameCheckboxLabel');
+  document.getElementById('playNoteCheckboxLabel').childNodes[1].textContent = getText('options', 'playNoteCheckbox');
+  document.getElementById('playNoteCheckboxLabel').title = getText('tooltips', 'playNoteCheckboxLabel');
+  document.getElementById('useBassClefCheckboxLabel').childNodes[1].textContent = getText('options', 'useBassClefCheckbox');
+  document.getElementById('useBassClefCheckboxLabel').title = getText('tooltips', 'useBassClefCheckboxLabel');
+  document.getElementById('showSummaryCheckboxLabel').childNodes[1].textContent = getText('options', 'showSummaryCheckbox');
+  document.getElementById('showSummaryCheckboxLabel').title = getText('tooltips', 'showSummaryCheckboxLabel');
+  document.getElementById('pauseCheckboxLabel').childNodes[1].textContent = getText('options', 'pauseInput');
+  document.getElementById('pauseCheckboxLabel').title = getText('tooltips', 'pauseCheckboxLabel');
+  document.getElementById('toleranceInputLabel').childNodes[0].textContent = getText('options', 'toleranceInput');
+  document.getElementById('toleranceInputLabel').title = getText('tooltips', 'toleranceInputLabel');
+  document.getElementById('instrumentSaxTenorRadioLabel').childNodes[1].textContent = getText('options', 'instrumentSaxTenorRadio');
+  document.getElementById('instrumentSaxTenorRadioLabel').title = getText('tooltips', 'instrumentSaxTenorRadioLabel');
+  document.getElementById('instrumentSaxAltRadioLabel').childNodes[1].textContent = getText('options', 'instrumentSaxAltRadio');
+  document.getElementById('instrumentSaxAltRadioLabel').title = getText('tooltips', 'instrumentSaxAltRadioLabel');
+  document.getElementById('instrumentRegularRadioLabel').childNodes[1].textContent = getText('options', 'instrumentRegularRadio');
+  document.getElementById('instrumentRegularRadioLabel').title = getText('tooltips', 'instrumentRegularRadioLabel');
+  document.getElementById('smallRangeRadioLabel').childNodes[1].textContent = getText('options', 'smallRangeRadio');
+  document.getElementById('smallRangeRadioLabel').title = getText('tooltips', 'smallRangeRadioLabel');
+  document.getElementById('middleRangeRadioLabel').childNodes[1].textContent = getText('options', 'middleRangeRadio');
+  document.getElementById('middleRangeRadioLabel').title = getText('tooltips', 'middleRangeRadioLabel');
+  document.getElementById('largeRangeRadioLabel').childNodes[1].textContent = getText('options', 'largeRangeRadio');
+  document.getElementById('largeRangeRadioLabel').title = getText('tooltips', 'largeRangeRadioLabel');
+  document.getElementById('noteFilterCheckboxLabel').childNodes[1].textContent = getText('options', 'noteFilterCheckbox');
+  document.getElementById('noteFilterCheckboxLabel').title = getText('tooltips', 'noteFilterCheckboxLabel');
+  document.getElementById('showSharpCheckboxLabel').childNodes[1].textContent = getText('options', 'showSharpCheckbox');
+  document.getElementById('showSharpCheckboxLabel').title = getText('tooltips', 'showSharpCheckboxLabel');
+  document.getElementById('showFlatCheckboxLabel').childNodes[1].textContent = getText('options', 'showFlatCheckbox');
+  document.getElementById('showFlatCheckboxLabel').title = getText('tooltips', 'showFlatCheckboxLabel');
+  document.getElementById('languageSelectorLabel').textContent = getText('options', 'languageSelector');
+  document.getElementById('instrumentTuningDiv').textContent = getText('options', 'instrumentTuning');
+  document.getElementById('noteRangeHeadingDiv').textContent = getText('options', 'noteRange');
+  document.getElementById('accidentalsDiv').textContent = getText('options', 'accidentals');
   //SUMMARY
-  document.getElementById('summaryHeading').textContent = getMessage('summary', 'summaryHeading');
-  document.getElementById('summaryMessage').textContent = getMessage('summary', 'summaryMessage');
-  document.getElementById('closeButton').textContent = getMessage('summary', 'closeButton');
+  document.getElementById('summaryHeading').textContent = getText('summary', 'summaryHeading');
+  document.getElementById('summaryMessage').textContent = getText('summary', 'summaryMessage');
+  document.getElementById('closeButton').textContent = getText('summary', 'closeButton');
 }
 
-let currentLanguage = 'de'; // Default language is German
+let currentLanguage = 'en'; // Default language is German
 
 function setLanguage(language) {
   currentLanguage = language;
   updateTexts();
 }
 
-function getMessage(group, key, replacements = {}) {
-  let message = messages[currentLanguage][group][key];
+function getText(group, key, replacements = {}) {
+  let text = texts[currentLanguage][group][key];
   for (const [placeholder, value] of Object.entries(replacements)) {
-    message = message.replace(`{${placeholder}}`, value);
+    text = text.replace(`{${placeholder}}`, value);
   }
-  return message;
+  return text;
 }
 
-const messages = {
-  en: {
-    messages: {
-      correct: "Well done! You played the note <b>{note}</b>.",
-      incorrect: "You played the note <b>{note}</b>!",
-      desiredNote: " Desired note is <b>{note}</b>.",
-      tryAgain: " Try again!",
-      playNote: "Play the given note!",
-      activating : "Activating microphone and initializing note detection...",
-      starting: "Starting note detection...",
-      loadingModel: "Loading model...",
-      modelLoaded: "Model loaded."
-    },
-    main: {
-      title: "Sabine's Note Trainer",
-      instruction: "Play the note on the <span id=\"instrumentName\"></span>:",
-      continue: "Continue",
-      startButton: "Start",
-      stopButton: "Stop"
-      },
-    options: {
-      optionsTitle: "Options",
-      showNoteNameCheckbox: "Show Note Names",
-      playNoteCheckbox: "Play Note",
-      useBassClefCheckbox: "Activate ",
-      showSummaryCheckbox: "Show Summary",
-      pauseInput: "Pause",
-      toleranceInput: "Tolerance (Hz)",
-      instrumentSaxTenorRadio: "Tenor Sax",
-      instrumentSaxAltRadio: "Alto Sax",
-      instrumentRegularRadio: "Piano",
-      smallRangeRadio: "Small",
-      middleRangeRadio: "Middle",
-      largeRangeRadio: "Large",
-      noteFilterCheckbox: "Note Filter",
-      noteFilterInput: "Filter Notes",
-      showSharpCheckbox: "Activate ",
-      showFlatCheckbox: "Activate ",
-      languageSelector: "Language",
-      instrumentTuning: "Instrument Tuning",
-      noteRange: "Note Range",
-      accidentals: "Accidentals"
-    },
-    tooltips: {
-      showNoteNameCheckboxLabel: "Shows the note name over the staff.\n(Disable this option to learn the direct translation from note to position.)",
-      playNoteCheckboxLabel: "Plays the newly suggested note briefly.",
-      useBassClefCheckboxLabel: "Switches to bass clef if needed.",
-      showSummaryCheckboxLabel: "Shows a summary when the stop button is pressed.",
-      pauseCheckboxLabel: "Specifies the pause (in milliseconds) between a successful note and the next suggested note.",
-      toleranceInputLabel: "Allows the specified deviation in Hertz for note recognition.",
-      noteFilterCheckboxLabel: "Selects all notes matching the letters in the list. You can also indicate the octave like 'C4 D4 C5', or b und #.",
-      showSharpCheckboxLabel: "Selects notes with ♯ (Cis, Dis, Fis, Gis, Ais).",
-      showFlatCheckboxLabel: "Selects notes with ♭ (Des, Es, Ges, As, bB).",
-      instrumentSaxTenorRadioLabel: "The tenor saxophone is notated a major ninth (14 semitones) higher than it sounds and is therefore tuned in B♭.",
-      instrumentSaxAltRadioLabel: "The alto saxophone is notated a major sixth (9 semitones) higher than it sounds and is therefore tuned in E♭.",
-      instrumentRegularRadioLabel: "Most instruments are notated as they sound.",
-      smallRangeRadioLabel: "Selects just a small range of notes.",
-      middleRangeRadioLabel: "Selects a medium range of notes.",
-      largeRangeRadioLabel: "Selects a large range of notes."
-    },
-    summary: {
-      summaryHeading: "Summary",
-      summaryMessage: "Notes you should practice:",
-      successMessage: "Great! No mistakes made!",
-      closeButton: "Close",
-      topIncorrectNotes: "top 3 notes"
-    }
-  },
-  de: {
-    messages: {
-      correct: "Gut gemacht! Du hast den Ton <b>{note}</b> gespielt.",
-      incorrect: "Du hast den Ton <b>{note}</b> gespielt!",
-      desiredNote: " Gewünschter Ton ist <b>{note}</b>.",
-      tryAgain: " Versuche es noch einmal!",
-      playNote: "Spiele den angegebenen Ton!",
-      activating : "Aktiviere Mikrofon und initialisiere Notenerkennung...",
-      starting: "Starte Notenerkennung...",
-      loadingModel: "Lade Modell...",
-      modelLoaded: "Modell geladen."
-    },
-    main: {
-      title: "Sabine's Noten Trainer",
-      instruction: "Spiele den Ton auf dem <span id=\"instrumentName\"></span>:",
-      continue: "Weiter",
-      startButton: "Start",
-      stopButton: "Stopp"
-    },
-    options: {  
-      optionsTitle: "Optionen",
-      showNoteNameCheckbox: "Zeige Notennamen",
-      playNoteCheckbox: "Spiele Ton",
-      useBassClefCheckbox: "Aktiviere ",
-      showSummaryCheckbox: "Zeige Zusammenfassung",
-      pauseInput: "Pause",
-      toleranceInput: "Toleranz (Hz)",
-      instrumentSaxTenorRadio: "Tenor Sax",
-      instrumentSaxAltRadio: "Alt Sax",
-      instrumentRegularRadio: "Klavier",
-      smallRangeRadio: "Klein",
-      middleRangeRadio: "Mittel",
-      largeRangeRadio: "Groß",
-      noteFilterCheckbox: "Noten Filter",
-      noteFilterInput: "Noten filtern",
-      showSharpCheckbox: "Aktiviere ",
-      showFlatCheckbox: "Aktiviere ",
-      languageSelector: "Sprache",
-      instrumentTuning: "Instrumenten Stimmung",
-      noteRange: "Notenraum",
-      accidentals: "Vorzeichen"
-    },
-    tooltips: {
-      showNoteNameCheckboxLabel: "Zeigt den Notennamen über den Noteninien an.\n(Deaktiviere diese Option um die direkte Übersetzung von Note zu Position zu lernen.)",
-      playNoteCheckboxLabel: "Spielt kurz den neu vorgeschlagenen Ton ab.",
-      useBassClefCheckboxLabel: "Wechselt bei Bedarf in den Bassschlüssel.",
-      showSummaryCheckboxLabel: "Zeigt eine Zusammenfassung wenn die Stopp-Taste gedrückt wird.",
-      pauseCheckboxLabel: "Gibt die Pause (in Millisekunden) zwischen einem erfolgreichen Ton und dem nächsten vorgeschlagenen Ton an.",
-      toleranceInputLabel: "Erlaubt bei der Ton-Erkennung die angegebene Abweichung in Hertz.",
-      noteFilterCheckboxLabel: "Wählt alle Töne aus, die den Buchstaben in der Liste entsprechen.\nEs kann auch die Oktave angegeben werden, z.B. 'C4 D4 C5', oder b und #.",
-      showSharpCheckboxLabel: "Wählt auch Noten mit ♯ (Cis, Dis, Fis, Gis, Ais) aus.",
-      showFlatCheckboxLabel: "Wählt auch Noten mit ♭ (Des, Es, Ges, As, B) aus.",
-      instrumentSaxTenorRadioLabel: "Das Tenorsaxophon notiert eine große None (14 Halbtöne) höher als klingend und ist damit in B gestimmt.",
-      instrumentSaxAltRadioLabel: "Das Altsaxophon notiert eine große Sexte (9 Halbtöne) höher als klingend und ist damit in Es gestimmt.",
-      instrumentRegularRadioLabel: "Die meisten Instrumente notieren wie klingend.",
-      smallRangeRadioLabel: "Wählt nur einen kleinen Notenraum aus.",
-      middleRangeRadioLabel: "Wählt einen mittleren Notenraum aus.",
-      largeRangeRadioLabel: "Wählt einen großen Notenraum aus."
-    },
-    summary: {
-      summaryHeading: "Zusammenfassung",
-      summaryMessage: "Noten, die Du noch üben solltest:",
-      successMessage: "Super! Keine Fehler gemacht!",
-      closeButton: "Schließen",
-      topIncorrectNotes: "Top 3 falsche Noten"
-    }
-  },
-  it: {
-    messages: {
-      correct: "Ben fatto! Hai suonato la nota <b>{note}</b>.",
-      incorrect: "Hai suonato la nota <b>{note}</b>!",
-      desiredNote: " La nota desiderata è <b>{note}</b>.",
-      tryAgain: " Riprova!",
-      playNote: "Suona la nota indicata!",
-      activating : "Attivazione del microfono e inizializzazione del rilevamento delle note...",
-      starting: "Avvio del rilevamento delle note...",
-      loadingModel: "Caricamento del modello...",
-      modelLoaded: "Modello caricato."
-    },
-    main: {
-      title: "Il Trainer di Note di Sabine",
-      instruction: "Suona la nota sul <span id=\"instrumentName\"></span>:",
-      continue: "Continua",
-      startButton: "Inizia",
-      stopButton: "Ferma"
-    },
-    options: {
-      optionsTitle: "Opzioni",
-      showNoteNameCheckbox: "Mostra i nomi delle note",
-      playNoteCheckbox: "Suona la nota",
-      useBassClefCheckbox: "Attiva ",
-      showSummaryCheckbox: "Mostra riepilogo",
-      pauseInput: "Pausa",
-      toleranceInput: "Tolleranza (Hz)",
-      instrumentSaxTenorRadio: "Sax Tenore",
-      instrumentSaxAltRadio: "Sax Alto",
-      instrumentRegularRadio: "Pianoforte",
-      smallRangeRadio: "Piccolo",
-      middleRangeRadio: "Medio",
-      largeRangeRadio: "Grande",
-      noteFilterCheckbox: "Filtro note",
-      noteFilterInput: "Filtra note",
-      showSharpCheckbox: "Attiva ",
-      showFlatCheckbox: "Attiva ",
-      languageSelector: "Lingua",
-      instrumentTuning: "Accordatura dello strumento",
-      noteRange: "Gamma di note",
-      accidentals: "Alterazioni"
-    },
-    tooltips: {
-      showNoteNameCheckboxLabel: "Mostra il nome della nota sopra il pentagramma.\n(Disabilita questa opzione per imparare la traduzione diretta da nota a posizione.)",
-      playNoteCheckboxLabel: "Suona brevemente la nota appena suggerita.",
-      useBassClefCheckboxLabel: "Passa alla chiave di basso se necessario.",
-      showSummaryCheckboxLabel: "Mostra un riepilogo quando viene premuto il pulsante di stop.",
-      pauseCheckboxLabel: "Specifica la pausa (in millisecondi) tra una nota corretta e la prossima nota suggerita.",
-      toleranceInputLabel: "Consente la deviazione specificata in Hertz per il riconoscimento delle note.",
-      noteFilterCheckboxLabel: "Seleziona tutte le note che corrispondono alle lettere nell'elenco. Puoi anche indicare l'ottava come 'C4 D4 C5', o b e #.",
-      showSharpCheckboxLabel: "Seleziona le note con ♯ (Do#, Re#, Fa#, Sol#, La#).",
-      showFlatCheckboxLabel: "Seleziona le note con ♭ (Re♭, Mi♭, Sol♭, La♭, Si♭).",
-      instrumentSaxTenorRadioLabel: "Il sassofono tenore è notato una nona maggiore (14 semitoni) più alta di come suona ed è quindi accordato in Si♭.",
-      instrumentSaxAltRadioLabel: "Il sassofono alto è notato una sesta maggiore (9 semitoni) più alta di come suona ed è quindi accordato in Mi♭.",
-      instrumentRegularRadioLabel: "La maggior parte degli strumenti è notata come suona.",
-      smallRangeRadioLabel: "Seleziona solo una piccola gamma di note.",
-      middleRangeRadioLabel: "Seleziona una gamma media di note.",
-      largeRangeRadioLabel: "Seleziona una grande gamma di note."
-    },
-    summary: {
-      summaryHeading: "Riepilogo",
-      summaryMessage: "Note che dovresti praticare:",
-      successMessage: "Ottimo! Nessun errore!",
-      closeButton: "Chiudi",
-      topIncorrectNotes: "top 3 note"
-    }
-  }  
-};
+function initLanguages() {
+  const languages = Object.keys(texts);
+  languages.forEach(language => {
+    const option = document.createElement('option');
+    option.value = language;
+    option.textContent = texts[language].prompt;
+    languageSelector.appendChild(option);
+  });
+}
