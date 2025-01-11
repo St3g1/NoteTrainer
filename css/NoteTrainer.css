@@ -160,7 +160,7 @@ body {
   font-size: 1.5em;
   text-align: right;
   width: 50px;
-  color: rgb(132, 132, 132);
+  color: rgb(0, 0, 0);
 }
 
 .note {
@@ -185,12 +185,12 @@ body {
 #ghostSharp {
   position: absolute;
   left: 70px;
-  opacity: 0.5;
+  opacity: 0.6;
 }
 #ghostFlat {
   position: absolute;
   left: 73px;
-  opacity: 0.5;
+  opacity: 0.6;
 }
 
 /*----------------- INTONATION ------------------*/
