@@ -2,14 +2,12 @@
  ToDo:
  - StartButton should be temporarily disabled until access to micro has been granted
  - No tone should be played until the micro dialog has been accepted (not technically...but from a user-interaction)
- - If a new note is proposed we discard all invalid notes until silence has been deteced
- - or we do not accept the old noteName to be applied for the next node
- - 
 */
  
 /*--------- Last Settings  --------------------------*/
 // Load saved options from localStorage
 function loadOptions() {
+  initLanguageSelector();
   showNoteNameCheckbox.checked = JSON.parse(localStorage.getItem("showNoteNameCheckbox")) || false;
   playNoteCheckbox.checked = JSON.parse(localStorage.getItem("playNoteCheckbox")) || false;
   useBassClefCheckbox.checked = JSON.parse(localStorage.getItem("useBassClefCheckbox")) || false;
@@ -28,8 +26,7 @@ function loadOptions() {
   noteFilterCheckbox.checked = JSON.parse(localStorage.getItem("noteFilterCheckbox")) || false;
   noteFilterInput.value = localStorage.getItem("noteFilterInput") || "C D E F G A H";
   noteFilterInput.disabled = !noteFilterCheckbox.checked;
-  initLanguages();
-  updateTexts(); 
+  setLanguage(languageSelector.value)
   updateInstrument();
   setSelectedNotes();
   setFilteredNotes();
@@ -799,7 +796,7 @@ function getText(group, key, replacements = {}) {
   return text;
 }
 
-function initLanguages() {
+function initLanguageSelector() {
   const languages = Object.keys(texts);
   languages.forEach(language => {
     const option = document.createElement('option');
