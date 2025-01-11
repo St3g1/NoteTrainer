@@ -231,7 +231,7 @@ function filterNotes(notes){
   } else if (middleRangeRadio.checked) {
     notes = notes.filter(note => note.position >= 0 && note.position <= 140);
   } else if (largeRangeRadio.checked) {
-    notes = notes.filter(note => note.position >= -70 && note.position <= 210);
+    notes = notes.filter(note => note.position >= -210 && note.position <= 210);
   }
   if (!showSharpCheckbox.checked) {
     notes = notes.filter(note => !note.name.includes('#'));
