@@ -11,7 +11,7 @@ function loadOptions() {
   initLanguageSelector();
   showNoteNameCheckbox.checked = JSON.parse(localStorage.getItem("showNoteNameCheckbox")) || false;
   showArrowsCheckbox.checked = JSON.parse(localStorage.getItem("showArrowsCheckbox")) || false;
-  showGhostNoteCheckbox.checked = JSON.parse(localStorage.getItem("showGhostNoteCheckbox")) || false;
+  showGhostNoteCheckbox.checked = JSON.parse(localStorage.getItem("showGhostNoteCheckbox")) || true;
   playNoteCheckbox.checked = JSON.parse(localStorage.getItem("playNoteCheckbox")) || false;
   useBassClefCheckbox.checked = JSON.parse(localStorage.getItem("useBassClefCheckbox")) || false;
   showSummaryCheckbox.checked = JSON.parse(localStorage.getItem("showSummaryCheckbox")) || false;
