@@ -176,6 +176,23 @@ body {
   background-color: black;
 }
 
+/*----------------- GHOST NOTE ------------------*/
+.ghostNote {
+  position: absolute;
+  left: 100px;
+  opacity: 0.5;
+}
+#ghostSharp {
+  position: absolute;
+  left: 70px;
+  opacity: 0.5;
+}
+#ghostFlat {
+  position: absolute;
+  left: 73px;
+  opacity: 0.5;
+}
+
 /*----------------- INTONATION ------------------*/
 #noteUp {
   position: absolute;

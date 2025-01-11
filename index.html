@@ -27,6 +27,7 @@
       <div id="optionsTitle"><h2>Optionen</h2></div>
       <label id="showNoteNameCheckboxLabel"><input type="checkbox" id="showNoteNameCheckbox">Zeige Notennamen</label>
       <label id="showArrowsCheckboxLabel"><input type="checkbox" id="showArrowsCheckbox">Zeige Hilfspfeile</label>
+      <label id="showGhostNoteCheckboxLabel"><input type="checkbox" id="showGhostNoteCheckbox">Zeige Geisternote</label>
       <label id="playNoteCheckboxLabel"><input type="checkbox" id="playNoteCheckbox">Spiele Ton</label>
       <label id="useBassClefCheckboxLabel"><input type="checkbox" id="useBassClefCheckbox">Aktiviere <b>𝄢</b></label>
       <label id="showSummaryCheckboxLabel"><input type="checkbox" id="showSummaryCheckbox">Zeige Zusammenfassung</label>
@@ -77,12 +78,19 @@
         <img id="clefBass" src="svg/clef_bass.svg" alt="clefBass" style="display: none;">
         <img id="sharp" src="svg/sharp.svg" alt="sharp" style="display: none;">
         <img id="flat" src="svg/flat.svg" alt="flat" style="display: none;">
-        <img id="noteUp" src="svg/up.svg" alt="flat" style="display: none;">
-        <img id="noteDown" src="svg/down.svg" alt="flat" style="display: none;">
+        <div id="noteName" class="note-name"></div>
         <svg id="note" class="note" width="24" height="40" style="display: none;">
           <ellipse id="noteEllipse" cx="12" cy="20" rx="12" ry="10" fill="black" />
         </svg>
-        <div id="noteName" class="note-name"></div>
+        <!-- Ghost Note -->
+        <svg id="ghostNote" class="ghostNote" width="24" height="40" style="display: none;">
+          <ellipse id="noteEllipse" cx="12" cy="20" rx="12" ry="10" fill="grey" />
+        </svg>
+        <img id="ghostSharp" src="svg/sharp.svg" alt="sharp" style="display: none;">
+        <img id="ghostFlat" src="svg/flat.svg" alt="flat" style="display: none;">
+        <!-- Intonation -->
+        <img id="noteUp" src="svg/up.svg" alt="flat" style="display: none;">
+        <img id="noteDown" src="svg/down.svg" alt="flat" style="display: none;">
       </div>
     </div>
     <!--------------- BUTTON ------------------>
