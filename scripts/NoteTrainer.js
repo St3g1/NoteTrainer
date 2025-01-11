@@ -503,7 +503,8 @@ function handleAudio(stream){
 async function loadModel() {
   if(!running){
     status(getText("texts", "loadingModel"));
-    model = await tf.loadModel('https://marl.github.io/crepe/model/model.json');
+//    model = await tf.loadModel('https://marl.github.io/crepe/model/model.json');
+    model = await tf.loadModel('https://tobiwern.github.io/NoteTrainer/crepe/model/model.json');
     status(getText("texts", "modelLoaded"));
   }
 }
