@@ -630,13 +630,14 @@ function checkNote(detectedFrequency) {
 
 function showUpDownArrow(noteName, closestNote, targetFrequency, detectedFrequency){
   hideUpDownArrow();
+  const offset = (currentNote.position < clefSwitchPosition) && useBassClefCheckbox.checked ? 120 : 0;
   if(!showArrowsCheckbox.checked){return;}
   if (detectedFrequency < targetFrequency) {
     noteUp.style.display = "block";
-    noteUp.style.bottom = `${currentNote.position + 20 + offset_global + 12}px`;
+    noteUp.style.bottom = `${currentNote.position + 20 + offset + offset_global + 12}px`;
   } else if (detectedFrequency > targetFrequency) {
     noteDown.style.display = "block";
-    noteDown.style.bottom = `${currentNote.position - 20 + offset_global + 12}px`;
+    noteDown.style.bottom = `${currentNote.position - 20 + offset + offset_global + 12}px`;
   }
 }
 
