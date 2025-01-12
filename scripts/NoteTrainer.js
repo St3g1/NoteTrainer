@@ -415,6 +415,7 @@ function setStemDirection(position) {
 // Play the note using Web Audio API
 
 let currentOscillator = null; 
+isTonePlaying = false;
 function playTone(note) {
   if (currentOscillator) {
     currentOscillator.stop();
@@ -425,11 +426,14 @@ function playTone(note) {
   oscillator.frequency.setValueAtTime(note.frequency + parseInt(offsetInput.value), audioContext.currentTime);
   oscillator.connect(audioContext.destination);
   oscillator.start();
+  isTonePlaying = true;
+  oscillator.onended = () => {currentOscillator = null; isTonePlaying = false;}; // Reset the current oscillator when the note has ended
   oscillator.stop(audioContext.currentTime + 1); // Play the note for 1 second
   currentOscillator = oscillator; // Update the current oscillator
 }
 
 let currentSource = null; // Variable to keep track of the currently playing source
+isMp3Playing = false;
 async function playMp3(note) {
   if(!(playNoteCheckbox.checked && note)){return null;} //don't play if checkbox is not checked or note is not defined
   enableAudioContextIfRequired();
@@ -443,8 +447,9 @@ async function playMp3(note) {
     source.buffer = audioBuffer;
     source.connect(audioContext.destination);
     source.start();
+    isMp3Playing = true;
     // Add an event listener for the 'ended' event
-    source.onended = () => {currentSource = null;};
+    source.onended = () => {currentSource = null; isMp3Playing = false;}; // Reset the current source when the audio has ended
     currentSource = source; // Update the current source
   } catch (error) {
     console.log('Error playing MP3:', error);
@@ -493,7 +498,8 @@ function enableAudioContextIfRequired() {
 
 /*----------------------- TONE DETECTION with neuronal network -------------------------------*/
 //Based on https://github.com/marl/crepe
-var confidenceRequested = 0.8
+const confidenceRequested = 0.8;
+const amplitudeThreshold = 5; //minimum amplitude to consider a tone
 
 function startToneDetection(){
   loadModel().then(() => {
@@ -577,6 +583,7 @@ var running = false;
 const cent_mapping = tf.add(tf.linspace(0, 7180, 360), tf.tensor(1997.3794084376191))
 
 function process_microphone_buffer(event) {
+  if (isTonePlaying || isMp3Playing) {return; } // Skip detection if a tone or MP3 is playing
   resample(event.inputBuffer, function(resampled) {
     tf.tidy(() => {
       running = true;
@@ -601,10 +608,21 @@ function process_microphone_buffer(event) {
       const weightSum = weights.dataSync().reduce((a, b) => a + b, 0);
       const predicted_cent = productSum / weightSum;
       const predicted_hz = 10 * Math.pow(2, predicted_cent / 1200.0);
+      //get amplitude
+      const amplitude = getAmplitude(resampled);
+//      console.log('Amplitude:', amplitude);
       //check if the detected note matches to the requested note 
-      checkNote((confidence > confidenceRequested) ? predicted_hz : null);
+      checkNote(predicted_hz, amplitude, confidence);
     });
   });
+}
+
+function getAmplitude(dataArray) {
+  let sumSquares = 0.0;
+  for (const amplitude of dataArray) {
+    sumSquares += amplitude * amplitude;
+  }
+  return Math.sqrt(sumSquares / dataArray.length)*100;
 }
 
 // perform resampling the audio to 16000 Hz, on which the model is trained.
@@ -636,9 +654,9 @@ var triedOnce = false;
 var toneWeighted = false;
 var decayTimeoutReached = false;
 var toneNamePrevious = null;
-function checkNote(detectedFrequency) {
-  if (currentNote) {
-    if (detectedFrequency) {
+function checkNote(detectedFrequency, amplitude, confidence) {
+  if (currentNote) { //A note was proposed
+    if ((confidence > confidenceRequested) && (amplitude > amplitudeThreshold)) { // Confidence and amplitude are high enough to consider the detected note
       const closestNote = getClosestNote(detectedFrequency);
       const closestNoteName = closestNote.name;
       const targetFrequency = currentNote.frequency+parseInt(offsetInput.value);
