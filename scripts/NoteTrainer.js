@@ -2,7 +2,9 @@
  ToDo:
  - StartButton should be temporarily disabled until access to micro has been granted
  - No tone should be played until the micro dialog has been accepted (not technically...but from a user-interaction)
- - Show note intonation if close to the note
+ - Show note intonation if close to the note (currently for all notes, should be only done for the same note)
+ - Need to get better at statistics - if a tone is played and whithout silence reaches the correct note, don't count it as failed even when initially the tone might not be correct
+ - Add Option for Lautstärkeschwelle für Töne
  */
  
 /*--------- Last Settings  --------------------------*/
@@ -18,6 +20,7 @@ function loadOptions() {
   pauseInput.value = localStorage.getItem("pauseInput") || "500";
   pauseInput.disabled = !pauseCheckbox.checked;
   pauseCheckbox.checked = JSON.parse(localStorage.getItem("pauseCheckbox")) || false;
+  volumeThresholdInput.value = localStorage.getItem("volumeThresholdInput") || "1";
   toleranceInput.value = localStorage.getItem("toleranceInput") || "5";
   offsetInput.value = localStorage.getItem("offsetInput") || "0";
   languageSelector.value = localStorage.getItem("languageSelector") || currentLanguage;
@@ -47,6 +50,7 @@ function saveOptions() {
   localStorage.setItem("showSummaryCheckbox", JSON.stringify(showSummaryCheckbox.checked));
   localStorage.setItem("pauseCheckbox", JSON.stringify(pauseCheckbox.checked));
   localStorage.setItem("pauseInput", pauseInput.value);
+  localStorage.setItem("volumeThresholdInput", volumeThresholdInput.value);
   localStorage.setItem("toleranceInput", toleranceInput.value);
   localStorage.setItem("offsetInput", offsetInput.value);
   localStorage.setItem("languageSelector", languageSelector.value);
@@ -79,6 +83,7 @@ const useBassClefCheckbox = document.getElementById("useBassClefCheckbox");
 const showSummaryCheckbox = document.getElementById("showSummaryCheckbox");
 const pauseCheckbox = document.getElementById("pauseCheckbox");
 const pauseInput = document.getElementById("pauseInput");
+const volumeThresholdInput = document.getElementById("volumeThresholdInput");
 const toleranceInput = document.getElementById("toleranceInput");
 const offsetInput = document.getElementById("offsetInput");
 const languageSelector = document.getElementById("languageSelector");
@@ -124,6 +129,7 @@ useBassClefCheckbox.addEventListener('change', () => {
 showSummaryCheckbox.addEventListener('change', () => { saveOptions(); });
 pauseCheckbox.addEventListener('change', () => { pauseInput.disabled = !pauseCheckbox.checked; saveOptions(); });
 pauseInput.addEventListener('change', () => { saveOptions();});
+volumeThresholdInput.addEventListener('change', () => { saveOptions(); });
 toleranceInput.addEventListener('change', () => { saveOptions(); });
 offsetInput.addEventListener('change', () => { saveOptions(); });
 instrumentSaxTenorRadio.addEventListener('change', () => { setSelectedNotes(); setFilteredNotes(); initNoteStatistics(); resetWeightedNoteNames(); updateInstrument(); saveOptions(); nextNote();});
@@ -161,6 +167,7 @@ function setOptionEnableState(state){ //no longer in use
   playNoteCheckbox.disabled = !state;
   useBassClefCheckbox.disabled = !state;
   showSummaryCheckbox.disabled = !state;
+  volumeThresholdInput.disabled = !state;
   toleranceInput.disabled = !state;
   offsetInput.disabled = !state;
   pauseCheckbox.disabled = !state;
@@ -499,7 +506,6 @@ function enableAudioContextIfRequired() {
 /*----------------------- TONE DETECTION with neuronal network -------------------------------*/
 //Based on https://github.com/marl/crepe
 const confidenceRequested = 0.8;
-const amplitudeThreshold = 5; //minimum amplitude to consider a tone
 
 function startToneDetection(){
   loadModel().then(() => {
@@ -656,7 +662,7 @@ var decayTimeoutReached = false;
 var toneNamePrevious = null;
 function checkNote(detectedFrequency, amplitude, confidence) {
   if (currentNote) { //A note was proposed
-    if ((confidence > confidenceRequested) && (amplitude > amplitudeThreshold)) { // Confidence and amplitude are high enough to consider the detected note
+    if ((confidence > confidenceRequested) && (amplitude > parseFloat(volumeThresholdInput.value))) { // Confidence and amplitude are high enough to consider the detected note
       const closestNote = getClosestNote(detectedFrequency);
       const closestNoteName = closestNote.name;
       const targetFrequency = currentNote.frequency+parseInt(offsetInput.value);
@@ -890,6 +896,9 @@ function updateTexts() {
   document.getElementById('showSummaryCheckboxLabel').title = getText('tooltips', 'showSummaryCheckboxLabel');
   document.getElementById('pauseCheckboxLabel').childNodes[1].textContent = getText('options', 'pauseInput');
   document.getElementById('pauseCheckboxLabel').title = getText('tooltips', 'pauseCheckboxLabel');
+  document.getElementById('toneDetectionDiv').textContent = getText('options', 'toneDetection');
+  document.getElementById('volumeThresholdInputLabel').childNodes[0].textContent = getText('options', 'volumeThresholdInput');
+  document.getElementById('volumeThresholdInputLabel').title = getText('tooltips', 'volumeThresholdInputLabel');
   document.getElementById('toleranceInputLabel').childNodes[0].textContent = getText('options', 'toleranceInput');
   document.getElementById('toleranceInputLabel').title = getText('tooltips', 'toleranceInputLabel');
   document.getElementById('offsetInputLabel').childNodes[0].textContent = getText('options', 'offsetInput');

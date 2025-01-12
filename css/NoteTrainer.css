@@ -95,7 +95,7 @@ body {
 }
 .option-container .option-heading {
   font-weight: bold; /* Make the section titles bold */
-  margin-top: 15px; /* Increase the top margin to create more space */
+  margin-top: 7px; /* Increase the top margin to create more space */
   margin-bottom: 5px; /* Increase the top margin to create more space */
 }
 .options-radio-one-line {
