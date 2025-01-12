@@ -711,11 +711,11 @@ function handleIncorrectNotePlayed(closestNote, targetFrequency, detectedFrequen
   if(pauseCheckbox.checked){
     status("<span class='message-red'>" + getText("texts", "incorrect", {note: closestNote.name}) + "</span>" + (showNoteNameCheckbox.checked ? getText("texts", "desiredNote", {note: currentNote.name}) : getText("texts", "tryAgain")));
     highlightNote(false); //since will always be red when playing with no pause
-    showUpDownArrow(currentNote.name, closestNote.name, targetFrequency, detectedFrequency);
-    drawGhostNote(closestNote);
-  } else {
-    status("<span>" + getText("texts", "incorrect", {note: closestNote.name}) + "</span>" + (showNoteNameCheckbox.checked ? getText("texts", "desiredNote", {note: currentNote.name}) : getText("texts", "tryAgain")));
+  // } else {
+  //   status((showNoteNameCheckbox.checked ? getText("texts", "desiredNote", {note: currentNote.name}) : getText("texts", "tryAgain")));
   }
+  showUpDownArrow(currentNote.name, closestNote.name, targetFrequency, detectedFrequency);
+  drawGhostNote(closestNote);
 }
 
 function handleCorrectNotePlayed(){
