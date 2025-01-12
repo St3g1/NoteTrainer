@@ -3,8 +3,6 @@
  - StartButton should be temporarily disabled until access to micro has been granted
  - No tone should be played until the micro dialog has been accepted (not technically...but from a user-interaction)
  - Show note intonation if close to the note (currently for all notes, should be only done for the same note)
- - Need to get better at statistics - if a tone is played and whithout silence reaches the correct note, don't count it as failed even when initially the tone might not be correct
- - Add Option for Lautstärkeschwelle für Töne
  */
  
 /*--------- Last Settings  --------------------------*/
@@ -710,10 +708,14 @@ function checkNote(detectedFrequency, amplitude, confidence) {
 }
 
 function handleIncorrectNotePlayed(closestNote, targetFrequency, detectedFrequency){
-  status("<span class='message-red'>" + getText("texts", "incorrect", {note: closestNote.name}) + "</span>" + (showNoteNameCheckbox.checked ? getText("texts", "desiredNote", {note: currentNote.name}) : getText("texts", "tryAgain")));
-  highlightNote(false);
-  showUpDownArrow(currentNote.name, closestNote.name, targetFrequency, detectedFrequency);
-  drawGhostNote(closestNote);
+  if(pauseCheckbox.checked){
+    status("<span class='message-red'>" + getText("texts", "incorrect", {note: closestNote.name}) + "</span>" + (showNoteNameCheckbox.checked ? getText("texts", "desiredNote", {note: currentNote.name}) : getText("texts", "tryAgain")));
+    highlightNote(false); //since will always be red when playing with no pause
+    showUpDownArrow(currentNote.name, closestNote.name, targetFrequency, detectedFrequency);
+    drawGhostNote(closestNote);
+  } else {
+    status("<span>" + getText("texts", "incorrect", {note: closestNote.name}) + "</span>" + (showNoteNameCheckbox.checked ? getText("texts", "desiredNote", {note: currentNote.name}) : getText("texts", "tryAgain")));
+  }
 }
 
 function handleCorrectNotePlayed(){
