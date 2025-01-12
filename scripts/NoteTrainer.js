@@ -929,6 +929,37 @@ function initLanguageSelector() {
   });
 }
 
+/*----------------------- Keep Screen turned on -------------------------------*/
+let wakeLock = null;
+
+async function requestWakeLock() {
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    wakeLock.addEventListener('release', () => {
+      console.log('Wake Lock was released');
+    });
+    console.log('Wake Lock is active');
+  } catch (err) {
+    console.error(`${err.name}, ${err.message}`);
+  }
+}
+
+function releaseWakeLock() {
+  if (wakeLock !== null) {
+    wakeLock.release()
+      .then(() => {
+        wakeLock = null;
+        console.log('Wake Lock was released');
+      });
+  }
+}
+
+// Request wake lock when the page loads
+window.addEventListener('load', requestWakeLock);
+
+// Release wake lock when the page is unloaded
+window.addEventListener('unload', releaseWakeLock);
+
 /*----------------------- DEBUG (Note mp3) -------------------------------*/
 
 noteIndex = 0;
