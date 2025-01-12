@@ -214,6 +214,10 @@ button {
   border-radius: 10px; /* Optional: Add rounded corners */
   cursor: pointer; /* Change the cursor to a pointer when hovering */
 }
+#continueButton {
+  background-color: gray;
+}
+
 .buttons {
   display: flex; 
   gap: 10px;

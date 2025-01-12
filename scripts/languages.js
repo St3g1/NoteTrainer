@@ -16,7 +16,7 @@ const texts = {
     main: {
       title: "Note Trainer",
       instruction: "Play the note on the <span id=\"instrumentName\"></span>:",
-      continue: "Continue",
+      continueButton: "Continue",
       startButton: "Start",
       stopButton: "Stop"
       },
@@ -93,7 +93,7 @@ const texts = {
     main: {
       title: "Noten Trainer",
       instruction: "Spiele den Ton auf dem <span id=\"instrumentName\"></span>:",
-      continue: "Weiter",
+      continueButton: "Weiter",
       startButton: "Start",
       stopButton: "Stopp"
     },
@@ -170,7 +170,7 @@ const texts = {
     main: {
       title: "Allenatore di Note",
       instruction: "Suona la nota sul <span id=\"instrumentName\"></span>:",
-      continue: "Continua",
+      continueButton: "Continua",
       startButton: "Inizia",
       stopButton: "Ferma"
     },
@@ -247,7 +247,7 @@ const texts = {
     main: {
       title: "Entraîneur de Notes",
       instruction: "Jouez la note sur le <span id=\"instrumentName\"></span>:",
-      continue: "Continuer",
+      continueButton: "Continuer",
       startButton: "Démarrer",
       stopButton: "Arrêter"
     },
@@ -325,7 +325,7 @@ const texts = {
     main: {
       title: "Entrenador de Notas",
       instruction: "Toca la nota en el <span id=\"instrumentName\"></span>:",
-      continue: "Continuar",
+      continueButton: "Continuar",
       startButton: "Iniciar",
       stopButton: "Detener"
     },
@@ -396,7 +396,7 @@ const texts = {
     main: {
       title: "Treinador de Notas",
       instruction: "Toque a nota no <span id=\"instrumentName\"></span>:",
-      continue: "Continuar",
+      continueButton: "Continuar",
       startButton: "Iniciar",
       stopButton: "Parar"
     },
@@ -473,7 +473,7 @@ const texts = {
     main: {
       title: "Notentrainer",
       instruction: "Speel de noot op de <span id=\"instrumentName\"></span>:",
-      continue: "Doorgaan",
+      continueButton: "Doorgaan",
       startButton: "Start",
       stopButton: "Stop"
     },
@@ -550,7 +550,7 @@ const texts = {
     main: {
       title: "Trener Nut",
       instruction: "Zagraj nutę na <span id=\"instrumentName\"></span>:",
-      continue: "Kontynuuj",
+      continueButton: "Kontynuuj",
       startButton: "Start",
       stopButton: "Stop"
     },
@@ -627,7 +627,7 @@ const texts = {
     main: {
       title: "Hang Tréner",
       instruction: "Játszd el a hangot a <span id=\"instrumentName\"></span>-on:",
-      continue: "Folytatás",
+      continueButton: "Folytatás",
       startButton: "Indítás",
       stopButton: "Leállítás"
     },

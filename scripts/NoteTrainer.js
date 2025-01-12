@@ -73,6 +73,7 @@ const flatElement = document.getElementById("flat");
 const ghostSharpElement = document.getElementById("ghostSharp");
 const ghostFlatElement = document.getElementById("ghostFlat");
 const startButton = document.getElementById("startButton");
+const continueButton = document.getElementById("continueButton");
 const stopButton = document.getElementById("stopButton");
 const noteNameElement = document.getElementById("noteName");
 const showNoteNameCheckbox = document.getElementById("showNoteNameCheckbox");
@@ -129,6 +130,7 @@ useBassClefCheckbox.addEventListener('change', () => {
 showSummaryCheckbox.addEventListener('change', () => { saveOptions(); });
 pauseCheckbox.addEventListener('change', () => { pauseInput.disabled = !pauseCheckbox.checked; saveOptions(); });
 pauseInput.addEventListener('change', () => { saveOptions();});
+document.getElementById('debugCheckbox').addEventListener('change', () => { if(!document.getElementById('debugCheckbox').checked){debug("");}});
 volumeThresholdInput.addEventListener('change', () => { saveOptions(); });
 toleranceInput.addEventListener('change', () => { saveOptions(); });
 offsetInput.addEventListener('change', () => { saveOptions(); });
@@ -150,7 +152,9 @@ document.addEventListener('click', (event) => { //close option dialog if clicked
 });
 instrumentImage.addEventListener('dblclick', () => {playAllNotes(notesFiltered);});
 startButton.addEventListener("click", () => {startToneDetection(); });
+continueButton.addEventListener("click", () => {nextNote(); });
 stopButton.addEventListener("click", () => {
+  releaseWakeLock();
   stopToneDetection();
   handleButtons();
   if(showSummaryCheckbox.checked){
@@ -185,12 +189,12 @@ function setOptionEnableState(state){ //no longer in use
 
 function handleButtons(force = false) {
   if(running || force) {
-    startButton.textContent = getText("main", "continue"); // Change button text to "Weiter"
-    startButton.style.backgroundColor = "gray"; // Change button color to gray
+    startButton.style.display = "none";
+    continueButton.style.display = "block";
     stopButton.style.display = "block";
   } else {
-    startButton.textContent = getText("main", "startButton"); // Change button text to "Start"
-    startButton.style.backgroundColor = "green"; // Change button color to gray
+    startButton.style.display = "block";
+    continueButton.style.display = "none";
     stopButton.style.display = "none";
   }  
 }
@@ -222,9 +226,18 @@ function status(text) {
   document.getElementById('status').innerHTML = text;
 }
 
-function debug(text) {
-  document.getElementById('debugMsg').style.display = 'block';
-  document.getElementById('debugMsg').innerHTML = document.getElementById('debugMsg').innerHTML + "<br>=============================<br>" + text;
+let lastMessage;
+function debug(text, reset = false) {
+  if(document.getElementById('debugCheckbox').checked){
+    if(text != lastMessage){
+      document.getElementById('debugMsg').style.display = 'block';
+      document.getElementById('debugMsg').innerHTML = (reset ? "" : document.getElementById('debugMsg').innerHTML + "<br>") + text;
+    }
+    lastMessage = text;
+  } else {
+    document.getElementById('debugMsg').style.display = 'none';
+    document.getElementById('debugMsg').innerHTML = "";
+  }   
 }
 
 //--------------- NOTE SELECTION ------------------------------
@@ -295,15 +308,18 @@ function initNoteStatistics() {
 
 // Show the next note
 function nextNote() {
+  debug("Proposing next note. ==============================", false);
   noteEllipse.setAttribute("fill", "black"); // Reset note color after delay
   resetSharpFlatColor();
   hideUpDownArrow();
   hideGhostNote();
+  blockDetection = false; // Unblock detection after a pause
   triedOnce = false;
-  decayTimeoutReached = false; // Reset decay timeout flag
-  setTimeout(() => {decayTimeoutReached = true;}, 3000); // Set decay timeout to 3 seconds, until the previous note is detected as incorrect
+  incorrectWhenSilence = false;
   toneWeighted = false; //Only weight a tone as correct/incorrect once per proposed note
   correctNotePlayed = false; // Reset the flag for the next note
+  decayTimeoutReached = false; // Reset decay timeout flag
+  setTimeout(() => {decayTimeoutReached = true;}, 3000); // Set decay timeout to 3 seconds, until the previous note is detected as incorrect
   currentNote = getNextNote();
   displayNote(currentNote);
   noteContainer.className = "staff"; // Reset staff color
@@ -513,8 +529,9 @@ function startToneDetection(){
       initAudio();
       initNoteStatistics();
       handleButtons(true);
+      requestWakeLock();
+      nextNote(); 
     }
-    nextNote();
     saveOptions();
   });
 }
@@ -589,7 +606,7 @@ var running = false;
 const cent_mapping = tf.add(tf.linspace(0, 7180, 360), tf.tensor(1997.3794084376191))
 
 function process_microphone_buffer(event) {
-  if (isTonePlaying || isMp3Playing) {return; } // Skip detection if a tone or MP3 is playing
+  if (isTonePlaying || isMp3Playing || blockDetection) {return; } // Skip detection if a tone or MP3 is playing
   resample(event.inputBuffer, function(resampled) {
     tf.tidy(() => {
       running = true;
@@ -653,60 +670,87 @@ function resample(audioBuffer, onComplete) {
 }
 
 /*----------------------- TONE CHECKING -------------------------------*/
-var silence = false;
 var correctNotePlayed = false;
-var pauseTimeout;
 var triedOnce = false;
 var toneWeighted = false;
 var decayTimeoutReached = false;
 var toneNamePrevious = null;
+var incorrectWhenSilence = false;
+
 function checkNote(detectedFrequency, amplitude, confidence) {
-  if (currentNote) { //A note was proposed
+  if (currentNote) { //An intial note was proposed
     if ((confidence > confidenceRequested) && (amplitude > parseFloat(volumeThresholdInput.value))) { // Confidence and amplitude are high enough to consider the detected note
       const closestNote = getClosestNote(detectedFrequency);
-      const closestNoteName = closestNote.name;
-      const targetFrequency = currentNote.frequency+parseInt(offsetInput.value);
+      const targetFrequency = currentNote.frequency + parseInt(offsetInput.value); // Add offset
       const frequencyDifference = targetFrequency - detectedFrequency;
       const correct = Math.abs(frequencyDifference) < parseInt(toleranceInput.value); // Allow small tolerance
       if (correct) { //CORRECT
-        if(!toneWeighted){
-          updateWeightedNoteNames(currentNote.name, "decrement");
-          noteStatistics[currentNote.name].correct++;
-        }
-        correctNotePlayed = true; 
-        status("<span class='message-green'>" + getText("texts", "correct", {note: currentNote.name}) + "</span>");
-        highlightNote(true);
-        toneNamePrevious = currentNote.name;
-        hideUpDownArrow();
-        if(pauseCheckbox.checked){
-          clearTimeout(pauseTimeout); // Clear any existing timeout
-          pauseTimeout = setTimeout(() => {
-            nextNote(); // Suggest a new note after the pause
-          }, parseInt(pauseInput.value));
-        } else {  
-          nextNote(); // Suggest a new note with no pause
-        }
+        handleCorrectNotePlayed();
+        correctNotePlayed = true; //flag is needed in order to discard any wrong notes after a correct note
+        toneNamePrevious = closestNote.name;
+        if(incorrectWhenSilence){incorrectWhenSilence=false; debug("Resetting incorrect since correct note played without silence inbetween.");}
+        proposeNextNoteWithPauseIfRequested();
       } else { //INCORRECT          
-        if (!correctNotePlayed && ((closestNoteName != toneNamePrevious) || decayTimeoutReached)) { //if a tone was played correctly, discard any wrong notes after that. We enforce different proposed notes so will discard a previous note played again.
-          if(closestNoteName === currentNote.name){sign(frequencyDifference) === 1 ? closestNoteName = closestNoteName + "+" : closestNoteName = "-" + closestNoteName;} 
-          status("<span class='message-red'>" + getText("texts", "incorrect", {note: closestNoteName}) + "</span>" + (showNoteNameCheckbox.checked ? getText("texts", "desiredNote", {note: currentNote.name}) : getText("texts", "tryAgain")));
-          if(!toneWeighted){
-            updateWeightedNoteNames(currentNote.name, "increment");
-            noteStatistics[currentNote.name].incorrect++;
-          }
-          highlightNote(false);
-          drawGhostNote(closestNote);
-          showUpDownArrow(currentNote.name, closestNoteName, targetFrequency, detectedFrequency);
+        if (!correctNotePlayed && ((closestNote.name != toneNamePrevious) || decayTimeoutReached)) { //if a tone was played correctly, discard any wrong notes after that. We enforce different proposed notes so will discard a previous note played again.
+          incorrectWhenSilence = true; //flag to only count as incorrect if followed by silence
+          handleIncorrectNotePlayed(closestNote, targetFrequency, detectedFrequency);
         }
       }
       triedOnce = true;
-      silence = false;
     } else {
-      if(!triedOnce){
+      if(!triedOnce){ //only show message to play note after a new note was proposed
+        debug("Silence detected");  
         status("<span class='message-red'>" + getText("texts", "playNote") + (showNoteNameCheckbox.checked ? "</span>" + getText("texts", "desiredNote", {note: currentNote.name}) : "</span>"));
-      }  
-      silence = true; // triggers a new checking interval
+      }
+      if(incorrectWhenSilence){
+        accountIncorrectNotePlayed(); 
+      } //case: incorrect => correct w/o silence inbetween should not be counted as incorrect
     }
+  }
+}
+
+function handleIncorrectNotePlayed(closestNote, targetFrequency, detectedFrequency){
+  status("<span class='message-red'>" + getText("texts", "incorrect", {note: closestNote.name}) + "</span>" + (showNoteNameCheckbox.checked ? getText("texts", "desiredNote", {note: currentNote.name}) : getText("texts", "tryAgain")));
+  highlightNote(false);
+  showUpDownArrow(currentNote.name, closestNote.name, targetFrequency, detectedFrequency);
+  drawGhostNote(closestNote);
+}
+
+function handleCorrectNotePlayed(){
+  accountCorrectNotePlayed()
+  status("<span class='message-green'>" + getText("texts", "correct", {note: currentNote.name}) + "</span>");
+  highlightNote(true);
+  hideUpDownArrow();
+  hideGhostNote();
+}
+
+function accountCorrectNotePlayed(){
+  if(!toneWeighted){//only weight a note once per proposed note
+    debug("Counting " + currentNote.name + " as CORRECT note.");
+    updateWeightedNoteNames(currentNote.name, "decrement");
+    noteStatistics[currentNote.name].correct++;
+  }
+}
+
+function accountIncorrectNotePlayed(){
+  if(!toneWeighted){//only weight a note once per proposed note
+    debug("Counting " + currentNote.name + " as INCORRECT since silence after incorrect note.");
+    updateWeightedNoteNames(currentNote.name, "increment");
+    noteStatistics[currentNote.name].incorrect++; 
+  }
+}
+
+var pauseTimeout;
+var blockDetection = false;
+function proposeNextNoteWithPauseIfRequested(){
+  if(pauseCheckbox.checked){
+    blockDetection = true; // Block any detection until the pause is over
+    clearTimeout(pauseTimeout); // Clear any existing timeout
+    pauseTimeout = setTimeout(() => {
+      nextNote(); // Suggest a new note after the pause - this is asynchroneous! - this loop will continue to spin - do we need to block any detection?
+    }, parseInt(pauseInput.value));
+  } else {  
+    nextNote(); // Suggest a new note with no pause
   }
 }
 
@@ -765,7 +809,7 @@ function getClosestNote(frequency) {
   return closestNote;
 }
 
-function getNoteByName(noteName) {
+function getNoteByName(noteName) { //not used
   for (let i = 0; i < notesSelected.length; i++) {
     if (notesSelected[i].name === noteName) {
       return notesSelected[i];
@@ -783,9 +827,11 @@ function updateWeightedNoteNames(noteName, type) {
   const noteCount = noteNamesWeighted.filter(item => item === noteName).length;
   if (type === "increment" && noteCount < 3) {
     noteNamesWeighted.push(noteName);
+//    debug("updateWeightedNoteNames: " + noteName + " incremented, noteNameWeighted: " + noteNamesWeighted);
   } else if (type === "decrement" && noteCount > 1) {
     const index = noteNamesWeighted.findIndex(item => item === noteName);
     noteNamesWeighted.splice(index, 1);
+//    debug("updateWeightedNoteNames: " + noteName + " decremented, noteNameWeighted: " + noteNamesWeighted);
   }
   toneWeighted = true; // Only weight a tone as correct/incorrect once per proposed note (gets reset with nextNote())
 }
@@ -879,7 +925,9 @@ function updateTexts() {
   document.getElementById('title').textContent = getText('main', 'title');
   document.getElementById('instruction').innerHTML = getText('main', 'instruction'); //, { instrument: document.getElementById('instrumentName').textContent });
   updateInstrument();
-  handleButtons();
+  startButton.textContent = getText("main", "startButton"); // Change button text to "Weiter"
+  stopButton.textContent = getText("main", "stopButton"); // Change button text to "Stop"
+  continueButton.textContent = getText("main", "continueButton"); // Change button text to "Weiter"
   //OPTIONS
   document.getElementById('optionsTitle').childNodes[0].textContent = getText('options', 'optionsTitle');
   document.getElementById('showNoteNameCheckboxLabel').childNodes[1].textContent = getText('options', 'showNoteNameCheckbox');
@@ -962,10 +1010,6 @@ let wakeLock = null;
 async function requestWakeLock() {
   try {
     wakeLock = await navigator.wakeLock.request('screen');
-    wakeLock.addEventListener('release', () => {
-      console.log('Wake Lock was released');
-    });
-    console.log('Wake Lock is active');
   } catch (err) {
     console.error(`${err.name}, ${err.message}`);
   }
@@ -973,19 +1017,11 @@ async function requestWakeLock() {
 
 function releaseWakeLock() {
   if (wakeLock !== null) {
-    wakeLock.release()
-      .then(() => {
-        wakeLock = null;
-        console.log('Wake Lock was released');
-      });
+    wakeLock.release().then(() => {
+      wakeLock = null;
+    });
   }
 }
-
-// Request wake lock when the page loads
-window.addEventListener('load', requestWakeLock);
-
-// Release wake lock when the page is unloaded
-window.addEventListener('unload', releaseWakeLock);
 
 /*----------------------- DEBUG (Note mp3) -------------------------------*/
 
