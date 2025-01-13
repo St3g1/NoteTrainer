@@ -242,6 +242,14 @@ button {
   color: green;
 }
 
+#author {
+  margin-top: 20px;
+  font-size: 0.8em;
+  font-weight: normal;
+  font-style: italic;
+  color: rgb(203, 203, 203);
+}
+
 /*----------------- STATISTICS ------------------*/
 #statisticsDialog {
   display: none;

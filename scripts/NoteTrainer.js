@@ -126,7 +126,7 @@ useBassClefCheckbox.addEventListener('change', () => {
   displayNote(currentNote);
 });   
 showSummaryCheckbox.addEventListener('change', () => { saveOptions(); });
-pauseCheckbox.addEventListener('change', () => { pauseInput.disabled = !pauseCheckbox.checked; saveOptions(); });
+pauseCheckbox.addEventListener('change', () => { pauseInput.disabled = !pauseCheckbox.checked; resetNoteColor(); saveOptions(); });
 pauseInput.addEventListener('change', () => { saveOptions();});
 document.getElementById('debugCheckbox').addEventListener('change', () => { if(!document.getElementById('debugCheckbox').checked){debug("");}});
 volumeThresholdInput.addEventListener('change', () => { saveOptions(); });
@@ -195,6 +195,10 @@ function handleButtons(force = false) {
     continueButton.style.display = "none";
     stopButton.style.display = "none";
   }  
+}
+
+function isStarted() {
+  return startButton.style.display == "none";
 }
 
 function updateInstrument() {
@@ -307,8 +311,7 @@ function initNoteStatistics() {
 // Show the next note
 function nextNote() {
   debug("Proposing next note. ==============================", false);
-  noteEllipse.setAttribute("fill", "black"); // Reset note color after delay
-  resetSharpFlatColor();
+  resetNoteColor();
   hideUpDownArrow();
   hideGhostNote();
   blockDetection = false; // Unblock detection after a pause
@@ -319,7 +322,7 @@ function nextNote() {
   decayTimeoutReached = false; // Reset decay timeout flag
   setTimeout(() => {decayTimeoutReached = true;}, 3000); // Set decay timeout to 3 seconds, until the previous note is detected as incorrect
   currentNote = getNextNote();
-  displayNote(currentNote);
+  if(isStarted()){displayNote(currentNote)};
   noteContainer.className = "staff"; // Reset staff color
 }
 
@@ -793,7 +796,8 @@ function changeSvgColor(elementId, color) {
   }
 }
 
-function resetSharpFlatColor() { //reset color to black  
+function resetNoteColor() { //reset color to black
+  noteEllipse.setAttribute("fill", "black"); // Reset note color after delay
   changeSvgColor('sharp', "black");
   changeSvgColor('flat', "black"); 
 }
