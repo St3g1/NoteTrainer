@@ -8,7 +8,7 @@
 /*--------- Last Settings  --------------------------*/
 // Load saved options from localStorage
 function loadOptions() {
-  initLanguageSelector();
+  initLanguageSelector(); //set language options in GUI
   showNoteNameCheckbox.checked = JSON.parse(localStorage.getItem("showNoteNameCheckbox")) || false;
   showArrowsCheckbox.checked = JSON.parse(localStorage.getItem("showArrowsCheckbox")) || false;
   showGhostNoteCheckbox.checked = JSON.parse(localStorage.getItem("showGhostNoteCheckbox")) || true;
@@ -18,12 +18,10 @@ function loadOptions() {
   pauseInput.value = localStorage.getItem("pauseInput") || "500";
   pauseInput.disabled = !pauseCheckbox.checked;
   pauseCheckbox.checked = JSON.parse(localStorage.getItem("pauseCheckbox")) || false;
-  volumeThresholdInput.value = localStorage.getItem("volumeThresholdInput") || "1";
-  toleranceInput.value = localStorage.getItem("toleranceInput") || "5";
-  offsetInput.value = localStorage.getItem("offsetInput") || "0";
   languageSelector.value = localStorage.getItem("languageSelector") || currentLanguage;
   const selectedInstrument = localStorage.getItem("selectedInstrument") || "saxTenor";
   document.querySelector(`input[name="instrument"][value="${selectedInstrument}"]`).checked = true;
+  loadInstrumentSettings(selectedInstrument); // Load instrument-specific settings
   const selectedNoteRange = localStorage.getItem("selectedNoteRange") || "small";
   document.querySelector(`input[name="noteRange"][value="${selectedNoteRange}"]`).checked = true;
   showSharpCheckbox.checked = JSON.parse(localStorage.getItem("showSharpCheckbox")) || false;
@@ -38,6 +36,12 @@ function loadOptions() {
   resetWeightedNoteNames();
 }
 
+function loadInstrumentSettings(instrument) {
+  volumeThresholdInput.value = localStorage.getItem(`${instrument}_volumeThresholdInput`) || "1";
+  toleranceInput.value = localStorage.getItem(`${instrument}_toleranceInput`) || "5";
+  offsetInput.value = localStorage.getItem(`${instrument}_offsetInput`) || "0";
+}
+
 // Save options to localStorage
 function saveOptions() {
   localStorage.setItem("showNoteNameCheckbox", JSON.stringify(showNoteNameCheckbox.checked));
@@ -48,16 +52,23 @@ function saveOptions() {
   localStorage.setItem("showSummaryCheckbox", JSON.stringify(showSummaryCheckbox.checked));
   localStorage.setItem("pauseCheckbox", JSON.stringify(pauseCheckbox.checked));
   localStorage.setItem("pauseInput", pauseInput.value);
-  localStorage.setItem("volumeThresholdInput", volumeThresholdInput.value);
-  localStorage.setItem("toleranceInput", toleranceInput.value);
-  localStorage.setItem("offsetInput", offsetInput.value);
   localStorage.setItem("languageSelector", languageSelector.value);
-  localStorage.setItem("selectedInstrument", document.querySelector('input[name="instrument"]:checked').value);
+  const selectedInstrument = document.querySelector('input[name="instrument"]:checked').value;  
+  localStorage.setItem("selectedInstrument", selectedInstrument);
+  saveInstrumentSettings(selectedInstrument); // Save instrument-specific settings
   localStorage.setItem("selectedNoteRange", document.querySelector('input[name="noteRange"]:checked').value);
   localStorage.setItem("showSharpCheckbox", JSON.stringify(showSharpCheckbox.checked));
   localStorage.setItem("showFlatCheckbox", JSON.stringify(showFlatCheckbox.checked));
   localStorage.setItem("noteFilterCheckbox", JSON.stringify(noteFilterCheckbox.checked));
   localStorage.setItem("noteFilterInput", noteFilterInput.value);
+
+  
+}
+  
+function saveInstrumentSettings(instrument) {
+  localStorage.setItem(`${instrument}_volumeThresholdInput`, volumeThresholdInput.value);
+  localStorage.setItem(`${instrument}_toleranceInput`, toleranceInput.value);
+  localStorage.setItem(`${instrument}_offsetInput`, offsetInput.value);
 }
 
 //--------------- OBJECTS ------------------------------
@@ -132,9 +143,9 @@ document.getElementById('debugCheckbox').addEventListener('change', () => { if(!
 volumeThresholdInput.addEventListener('change', () => { saveOptions(); });
 toleranceInput.addEventListener('change', () => { saveOptions(); });
 offsetInput.addEventListener('change', () => { saveOptions(); });
-instrumentSaxTenorRadio.addEventListener('change', () => { setSelectedNotes(); setFilteredNotes(); initNoteStatistics(); resetWeightedNoteNames(); updateInstrument(); saveOptions(); nextNote();});
-instrumentSaxAltRadio.addEventListener('change', () => { setSelectedNotes(); setFilteredNotes(); initNoteStatistics(); resetWeightedNoteNames(); updateInstrument(); saveOptions(); nextNote();});
-instrumentRegularRadio.addEventListener('change', () => { setSelectedNotes(); setFilteredNotes(); initNoteStatistics(); resetWeightedNoteNames(); updateInstrument(); saveOptions(); nextNote();});
+instrumentSaxTenorRadio.addEventListener('change', () => {loadInstrumentSettings('saxTenor'); setSelectedNotes(); setFilteredNotes(); initNoteStatistics(); resetWeightedNoteNames(); updateInstrument(); saveOptions(); nextNote();});
+instrumentSaxAltRadio.addEventListener('change', () => {loadInstrumentSettings('saxAlt'); setSelectedNotes(); setFilteredNotes(); initNoteStatistics(); resetWeightedNoteNames(); updateInstrument(); saveOptions(); nextNote();});
+instrumentRegularRadio.addEventListener('change', () => {loadInstrumentSettings('regular'); setSelectedNotes(); setFilteredNotes(); initNoteStatistics(); resetWeightedNoteNames(); updateInstrument(); saveOptions(); nextNote();});
 showSharpCheckbox.addEventListener('change', () => { saveOptions(); setFilteredNotes(); resetWeightedNoteNames(); nextNote(); });
 showFlatCheckbox.addEventListener('change', () => { saveOptions(); setFilteredNotes(); resetWeightedNoteNames(); nextNote(); });
 smallRangeRadio.addEventListener('change', () => { saveOptions(); setFilteredNotes(); resetWeightedNoteNames(); nextNote(); });
