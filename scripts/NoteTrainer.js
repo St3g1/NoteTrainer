@@ -16,8 +16,10 @@ function loadOptions() {
   useBassClefCheckbox.checked = JSON.parse(localStorage.getItem("useBassClefCheckbox")) || false;
   showSummaryCheckbox.checked = JSON.parse(localStorage.getItem("showSummaryCheckbox")) || false;
   pauseInput.value = localStorage.getItem("pauseInput") || "500";
-  pauseInput.disabled = !pauseCheckbox.checked;
-  pauseCheckbox.checked = JSON.parse(localStorage.getItem("pauseCheckbox")) || false;
+  pauseCheckbox.checked = JSON.parse(localStorage.getItem("pauseCheckbox")) || true;
+  handlePauseFieldEnableState();
+  const selectedPause = localStorage.getItem("selectedPause") || "auto";
+  document.querySelector(`input[name="pauseOption"][value="${selectedPause}"]`).checked = true;
   languageSelector.value = localStorage.getItem("languageSelector") || currentLanguage;
   const selectedInstrument = localStorage.getItem("selectedInstrument") || "saxTenor";
   document.querySelector(`input[name="instrument"][value="${selectedInstrument}"]`).checked = true;
@@ -52,6 +54,8 @@ function saveOptions() {
   localStorage.setItem("showSummaryCheckbox", JSON.stringify(showSummaryCheckbox.checked));
   localStorage.setItem("pauseCheckbox", JSON.stringify(pauseCheckbox.checked));
   localStorage.setItem("pauseInput", pauseInput.value);
+  const selectedPause = document.querySelector('input[name="pauseOption"]:checked').value;
+  localStorage.setItem("selectedPause", selectedPause);
   localStorage.setItem("languageSelector", languageSelector.value);
   const selectedInstrument = document.querySelector('input[name="instrument"]:checked').value;  
   localStorage.setItem("selectedInstrument", selectedInstrument);
@@ -93,6 +97,10 @@ const useBassClefCheckbox = document.getElementById("useBassClefCheckbox");
 const showSummaryCheckbox = document.getElementById("showSummaryCheckbox");
 const pauseCheckbox = document.getElementById("pauseCheckbox");
 const pauseInput = document.getElementById("pauseInput");
+const pauseAutoRadioLabel = document.getElementById("pauseAutoRadioLabel");
+const pauseTextFieldRadioLabel = document.getElementById("pauseTextFieldRadioLabel");
+const pauseAutoRadio = document.getElementById("pauseAutoRadio");
+const pauseTextFieldRadio = document.getElementById("pauseTextFieldRadio");
 const volumeThresholdInput = document.getElementById("volumeThresholdInput");
 const toleranceInput = document.getElementById("toleranceInput");
 const offsetInput = document.getElementById("offsetInput");
@@ -119,6 +127,13 @@ let currentNote = null;
 let audioContext = null;
 let model;
 
+function handlePauseFieldEnableState() {
+  pauseInput.disabled = !pauseCheckbox.checked;
+  pauseAutoRadioLabel.disabled = !pauseCheckbox.checked;
+  pauseTextFieldRadioLabel.disabled = !pauseCheckbox.checked;
+  pauseAutoRadio.disabled = !pauseCheckbox.checked;
+  pauseTextFieldRadio.disabled = !pauseCheckbox.checked;
+}
 //--------------- EVENT LISTENERS ------------------------------
 showNoteNameCheckbox.addEventListener('change', () => {
   noteNameElement.textContent = showNoteNameCheckbox.checked && currentNote ? currentNote.name : '';
@@ -137,8 +152,10 @@ useBassClefCheckbox.addEventListener('change', () => {
   displayNote(currentNote);
 });   
 showSummaryCheckbox.addEventListener('change', () => { saveOptions(); });
-pauseCheckbox.addEventListener('change', () => { pauseInput.disabled = !pauseCheckbox.checked; resetNoteColor(); saveOptions(); });
+pauseCheckbox.addEventListener('change', () => { handlePauseFieldEnableState(); resetNoteColor(); saveOptions(); });
 pauseInput.addEventListener('change', () => { saveOptions();});
+pauseAutoRadio.addEventListener('change', () => { saveOptions();});
+pauseTextFieldRadio.addEventListener('change', () => { saveOptions();});
 document.getElementById('debugCheckbox').addEventListener('change', () => { if(!document.getElementById('debugCheckbox').checked){debug("");}});
 volumeThresholdInput.addEventListener('change', () => { saveOptions(); });
 toleranceInput.addEventListener('change', () => { saveOptions(); });
@@ -714,6 +731,10 @@ function checkNote(detectedFrequency, amplitude, confidence) {
         debug("Silence detected");  
         status("<span class='message-red'>" + getText("texts", "playNote") + (showNoteNameCheckbox.checked ? "</span>" + getText("texts", "desiredNote", {note: currentNote.name}) : "</span>"));
       }
+      if(triedOnce && correctNotePlayed && pauseCheckbox.checked && pauseAutoRadio.checked){ //in auto pause mode only propose next note if correct note was played and silence reached
+        debug("Silence detected after correct note played. Proposing next note.");
+        nextNote();
+      }  
       if(incorrectWhenSilence){
         accountIncorrectNotePlayed(); 
       } //case: incorrect => correct w/o silence inbetween should not be counted as incorrect
@@ -722,7 +743,7 @@ function checkNote(detectedFrequency, amplitude, confidence) {
 }
 
 function handleIncorrectNotePlayed(closestNote, targetFrequency, detectedFrequency){
-  if(pauseCheckbox.checked){
+  if(pauseCheckbox.checked && pauseTextFieldRadio.checked){ //only if not auto (auto waits for silence to propose next note)
     status("<span class='message-red'>" + getText("texts", "incorrect", {note: closestNote.name}) + "</span>" + (showNoteNameCheckbox.checked ? getText("texts", "desiredNote", {note: currentNote.name}) : getText("texts", "tryAgain")));
     highlightNote(false); //since will always be red when playing with no pause
   // } else {
@@ -759,12 +780,14 @@ function accountIncorrectNotePlayed(){
 var pauseTimeout;
 var blockDetection = false;
 function proposeNextNoteWithPauseIfRequested(){
-  if(pauseCheckbox.checked){
-    blockDetection = true; // Block any detection until the pause is over
-    clearTimeout(pauseTimeout); // Clear any existing timeout
-    pauseTimeout = setTimeout(() => {
-      nextNote(); // Suggest a new note after the pause - this is asynchroneous! - this loop will continue to spin - do we need to block any detection?
-    }, parseInt(pauseInput.value));
+  if(pauseCheckbox.checked){ 
+    if(pauseTextFieldRadio.checked){ //only if not auto (auto waits for silence to propose next note)
+      blockDetection = true; // Block any detection until the pause is over
+      clearTimeout(pauseTimeout); // Clear any existing timeout
+      pauseTimeout = setTimeout(() => {
+        nextNote(); // Suggest a new note after the pause - this is asynchroneous! - this loop will continue to spin - do we need to block any detection?
+      }, parseInt(pauseInput.value));
+    }
   } else {  
     nextNote(); // Suggest a new note with no pause
   }
@@ -961,6 +984,9 @@ function updateTexts() {
   document.getElementById('showSummaryCheckboxLabel').title = getText('tooltips', 'showSummaryCheckboxLabel');
   document.getElementById('pauseCheckboxLabel').childNodes[1].textContent = getText('options', 'pauseInput');
   document.getElementById('pauseCheckboxLabel').title = getText('tooltips', 'pauseCheckboxLabel');
+  document.getElementById('pauseAutoRadioLabel').childNodes[1].textContent = getText('options', 'pauseAutoRadio');
+  document.getElementById('pauseAutoRadioLabel').title = getText('tooltips', 'pauseAutoRadioLabel');
+  document.getElementById('pauseTextFieldRadioLabel').title = getText('tooltips', 'pauseTextFieldRadioLabel');
   document.getElementById('toneDetectionDiv').textContent = getText('options', 'toneDetection');
   document.getElementById('volumeThresholdInputLabel').childNodes[0].textContent = getText('options', 'volumeThresholdInput');
   document.getElementById('volumeThresholdInputLabel').title = getText('tooltips', 'volumeThresholdInputLabel');

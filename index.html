@@ -33,9 +33,11 @@
       <label id="showSummaryCheckboxLabel"><input type="checkbox" id="showSummaryCheckbox">Zeige Zusammenfassung</label>
       <div id="pauseCheckboxDiv" class="checkbox-text">
         <label id="pauseCheckboxLabel"><input type="checkbox" id="pauseCheckbox" >Pause: 
-        <input type="text" id="pauseInput" value="1000"></label>
+        <label id="pauseAutoRadioLabel"><input type="radio" name="pauseOption" id="pauseAutoRadio" value="auto" checked>Auto</label>
+        <label id="pauseTextFieldRadioLabel"><input type="radio" name="pauseOption" id="pauseTextFieldRadio" value="textField"><input type="text" id="pauseInput" style="width:50px;""></label>
+        </label>
       </div>
-      <label id="debugCheckboxLabel"><input type="checkbox" id="debugCheckbox">Debug (Developer)</label>
+      <label id="debugCheckboxLabel" style="display: none;"><input type="checkbox" id="debugCheckbox">Debug (Developer)</label>
       <div class="checkbox-text">
         <label id="languageSelectorLabel" for="languageSelector">Sprache</label>
         <select id="languageSelector"></select>
@@ -52,9 +54,9 @@
       </div>
       <div id="instrumentTuningDiv" class="option-heading">Instrumenten Stimmung:</div>
       <div class="options-radio-one-line">
+        <label id="instrumentRegularRadioLabel"><input type="radio" name="instrument" id="instrumentRegularRadio" value="regular" checked>Klavier</label>
         <label id="instrumentSaxTenorRadioLabel"><input type="radio" name="instrument" id="instrumentSaxTenorRadio" value="saxTenor">Tenor Sax</label>
         <label id="instrumentSaxAltRadioLabel"><input type="radio" name="instrument" id="instrumentSaxAltRadio" value="saxAlt">Alt Sax</label>
-        <label id="instrumentRegularRadioLabel"><input type="radio" name="instrument" id="instrumentRegularRadio" value="regular" checked>Klavier</label>
       </div>
       <div id="noteRangeHeadingDiv" class="option-heading">Notenraum:</div>
       <div class="options-radio-one-line">
