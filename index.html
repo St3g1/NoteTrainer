@@ -53,11 +53,9 @@
         <label id="offsetInputLabel">Verschiebung (Hz): <input type="text" id="offsetInput" value="0"></label>
       </div>
       <div id="instrumentTuningDiv" class="option-heading">Instrumenten Stimmung:</div>
-      <div class="options-radio-one-line">
-        <label id="instrumentRegularRadioLabel"><input type="radio" name="instrument" id="instrumentRegularRadio" value="regular" checked>Klavier</label>
-        <label id="instrumentSaxTenorRadioLabel"><input type="radio" name="instrument" id="instrumentSaxTenorRadio" value="saxTenor">Tenor Sax</label>
-        <label id="instrumentSaxAltRadioLabel"><input type="radio" name="instrument" id="instrumentSaxAltRadio" value="saxAlt">Alt Sax</label>
-      </div>
+      <div class="checkbox-text">
+        <select id="instrumentSelector"></select>
+      </div>      
       <div id="noteRangeHeadingDiv" class="option-heading">Notenraum:</div>
       <div class="options-radio-one-line">
         <label id="smallRangeRadioLabel"><input type="radio" name="noteRange" id="smallRangeRadio" value="small" checked>Klein</label>

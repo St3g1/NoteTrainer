@@ -3,8 +3,60 @@
  - StartButton should be temporarily disabled until access to micro has been granted
  - No tone should be played until the micro dialog has been accepted (not technically...but from a user-interaction)
  - Show note intonation if close to the note (currently for all notes, should be only done for the same note)
+ - Percentage Tolerance (not in Hz)
  */
- 
+
+//--------------- OBJECTS ------------------------------
+const noteContainer = document.getElementById("noteContainer");
+const noteElement = document.getElementById("note");
+const ghostNoteElement = document.getElementById("ghostNote");
+const clefTrebleElement = document.getElementById("clefTreble");
+const clefBassElement = document.getElementById("clefBass");
+const sharpElement = document.getElementById("sharp");
+const flatElement = document.getElementById("flat");
+const ghostSharpElement = document.getElementById("ghostSharp");
+const ghostFlatElement = document.getElementById("ghostFlat");
+const startButton = document.getElementById("startButton");
+const continueButton = document.getElementById("continueButton");
+const stopButton = document.getElementById("stopButton");
+const noteNameElement = document.getElementById("noteName");
+const showNoteNameCheckbox = document.getElementById("showNoteNameCheckbox");
+const showArrowsCheckbox = document.getElementById("showArrowsCheckbox");
+const showGhostNoteCheckbox = document.getElementById("showGhostNoteCheckbox");
+const playNoteCheckbox = document.getElementById("playNoteCheckbox");
+const useBassClefCheckbox = document.getElementById("useBassClefCheckbox");
+const showSummaryCheckbox = document.getElementById("showSummaryCheckbox");
+const pauseCheckbox = document.getElementById("pauseCheckbox");
+const pauseInput = document.getElementById("pauseInput");
+const pauseAutoRadioLabel = document.getElementById("pauseAutoRadioLabel");
+const pauseTextFieldRadioLabel = document.getElementById("pauseTextFieldRadioLabel");
+const pauseAutoRadio = document.getElementById("pauseAutoRadio");
+const pauseTextFieldRadio = document.getElementById("pauseTextFieldRadio");
+const volumeThresholdInput = document.getElementById("volumeThresholdInput");
+const toleranceInput = document.getElementById("toleranceInput");
+const offsetInput = document.getElementById("offsetInput");
+const languageSelector = document.getElementById("languageSelector");
+const smallRangeRadio = document.getElementById("smallRangeRadio");
+const middleRangeRadio = document.getElementById("middleRangeRadio");
+const largeRangeRadio = document.getElementById("largeRangeRadio");
+const noteFilterCheckbox = document.getElementById("noteFilterCheckbox");    
+const noteFilterInput = document.getElementById("noteFilterInput");  
+const showSharpCheckbox = document.getElementById("showSharpCheckbox");
+const showFlatCheckbox = document.getElementById("showFlatCheckbox");
+const noteEllipse = document.getElementById("noteEllipse");
+const noteUp = document.getElementById("noteUp");
+const noteDown = document.getElementById("noteDown");
+const burgerMenu = document.getElementById('burgerMenu');
+const optionContainer = document.getElementById('optionContainer');
+const instrumentSelector = document.getElementById("instrumentSelector");
+const instrumentImage = document.getElementById('instrumentImage');
+
+const instruction = document.getElementById('instruction'); 
+
+let currentNote = null;
+let audioContext = null;
+let model;
+
 /*--------- Last Settings  --------------------------*/
 // Load saved options from localStorage
 function loadOptions() {
@@ -21,9 +73,9 @@ function loadOptions() {
   const selectedPause = localStorage.getItem("selectedPause") || "auto";
   document.querySelector(`input[name="pauseOption"][value="${selectedPause}"]`).checked = true;
   languageSelector.value = localStorage.getItem("languageSelector") || currentLanguage;
-  const selectedInstrument = localStorage.getItem("selectedInstrument") || "saxTenor";
-  document.querySelector(`input[name="instrument"][value="${selectedInstrument}"]`).checked = true;
-  loadInstrumentSettings(selectedInstrument); // Load instrument-specific settings
+  initInstrumentSelector();
+  instrumentSelector.value = localStorage.getItem("instrumentSelector") || "regular";
+  loadInstrumentSettings(instrumentSelector.value); // Load instrument-specific settings
   const selectedNoteRange = localStorage.getItem("selectedNoteRange") || "small";
   document.querySelector(`input[name="noteRange"][value="${selectedNoteRange}"]`).checked = true;
   showSharpCheckbox.checked = JSON.parse(localStorage.getItem("showSharpCheckbox")) || false;
@@ -57,16 +109,13 @@ function saveOptions() {
   const selectedPause = document.querySelector('input[name="pauseOption"]:checked').value;
   localStorage.setItem("selectedPause", selectedPause);
   localStorage.setItem("languageSelector", languageSelector.value);
-  const selectedInstrument = document.querySelector('input[name="instrument"]:checked').value;  
-  localStorage.setItem("selectedInstrument", selectedInstrument);
-  saveInstrumentSettings(selectedInstrument); // Save instrument-specific settings
+  localStorage.setItem("instrumentSelector", instrumentSelector.value);
+  saveInstrumentSettings(instrumentSelector.value); // Save instrument-specific settings
   localStorage.setItem("selectedNoteRange", document.querySelector('input[name="noteRange"]:checked').value);
   localStorage.setItem("showSharpCheckbox", JSON.stringify(showSharpCheckbox.checked));
   localStorage.setItem("showFlatCheckbox", JSON.stringify(showFlatCheckbox.checked));
   localStorage.setItem("noteFilterCheckbox", JSON.stringify(noteFilterCheckbox.checked));
   localStorage.setItem("noteFilterInput", noteFilterInput.value);
-
-  
 }
   
 function saveInstrumentSettings(instrument) {
@@ -75,57 +124,19 @@ function saveInstrumentSettings(instrument) {
   localStorage.setItem(`${instrument}_offsetInput`, offsetInput.value);
 }
 
-//--------------- OBJECTS ------------------------------
-const noteContainer = document.getElementById("noteContainer");
-const noteElement = document.getElementById("note");
-const ghostNoteElement = document.getElementById("ghostNote");
-const clefTrebleElement = document.getElementById("clefTreble");
-const clefBassElement = document.getElementById("clefBass");
-const sharpElement = document.getElementById("sharp");
-const flatElement = document.getElementById("flat");
-const ghostSharpElement = document.getElementById("ghostSharp");
-const ghostFlatElement = document.getElementById("ghostFlat");
-const startButton = document.getElementById("startButton");
-const continueButton = document.getElementById("continueButton");
-const stopButton = document.getElementById("stopButton");
-const noteNameElement = document.getElementById("noteName");
-const showNoteNameCheckbox = document.getElementById("showNoteNameCheckbox");
-const showArrowsCheckbox = document.getElementById("showArrowsCheckbox");
-const showGhostNoteCheckbox = document.getElementById("showGhostNoteCheckbox");
-const playNoteCheckbox = document.getElementById("playNoteCheckbox");
-const useBassClefCheckbox = document.getElementById("useBassClefCheckbox");
-const showSummaryCheckbox = document.getElementById("showSummaryCheckbox");
-const pauseCheckbox = document.getElementById("pauseCheckbox");
-const pauseInput = document.getElementById("pauseInput");
-const pauseAutoRadioLabel = document.getElementById("pauseAutoRadioLabel");
-const pauseTextFieldRadioLabel = document.getElementById("pauseTextFieldRadioLabel");
-const pauseAutoRadio = document.getElementById("pauseAutoRadio");
-const pauseTextFieldRadio = document.getElementById("pauseTextFieldRadio");
-const volumeThresholdInput = document.getElementById("volumeThresholdInput");
-const toleranceInput = document.getElementById("toleranceInput");
-const offsetInput = document.getElementById("offsetInput");
-const languageSelector = document.getElementById("languageSelector");
-const instrumentSaxTenorRadio = document.getElementById("instrumentSaxTenorRadio");
-const instrumentSaxAltRadio = document.getElementById("instrumentSaxAltRadio");
-const instrumentRegularRadio = document.getElementById("instrumentRegularRadio");
-const smallRangeRadio = document.getElementById("smallRangeRadio");
-const middleRangeRadio = document.getElementById("middleRangeRadio");
-const largeRangeRadio = document.getElementById("largeRangeRadio");
-const noteFilterCheckbox = document.getElementById("noteFilterCheckbox");    
-const noteFilterInput = document.getElementById("noteFilterInput");  
-const showSharpCheckbox = document.getElementById("showSharpCheckbox");
-const showFlatCheckbox = document.getElementById("showFlatCheckbox");
-const noteEllipse = document.getElementById("noteEllipse");
-const noteUp = document.getElementById("noteUp");
-const noteDown = document.getElementById("noteDown");
-const burgerMenu = document.getElementById('burgerMenu');
-const optionContainer = document.getElementById('optionContainer');
-const instrumentImage = document.getElementById('instrumentImage');
-const instruction = document.getElementById('instruction'); 
-
-let currentNote = null;
-let audioContext = null;
-let model;
+function initInstrumentSelector() {
+  const instrumentNames = Object.keys(instruments);
+  const instrumentSelected = instrumentSelector.value;
+  while (instrumentSelector.options.length > 0) {instrumentSelector.remove(0);} // Clear the select options
+  instrumentNames.forEach(instrumentName => {
+    const option = document.createElement('option');
+    option.value = instrumentName;
+    option.title = getText("tooltips", instruments[instrumentName].key);
+    option.textContent = getText("options",  instruments[instrumentName].key);
+    instrumentSelector.appendChild(option);
+  });
+  instrumentSelector.value = instrumentSelected
+}
 
 function handlePauseFieldEnableState() {
   pauseInput.disabled = !pauseCheckbox.checked;
@@ -160,9 +171,7 @@ document.getElementById('debugCheckbox').addEventListener('change', () => { if(!
 volumeThresholdInput.addEventListener('change', () => { saveOptions(); });
 toleranceInput.addEventListener('change', () => { saveOptions(); });
 offsetInput.addEventListener('change', () => { saveOptions(); });
-instrumentSaxTenorRadio.addEventListener('change', () => {loadInstrumentSettings('saxTenor'); setSelectedNotes(); setFilteredNotes(); initNoteStatistics(); resetWeightedNoteNames(); updateInstrument(); saveOptions(); nextNote();});
-instrumentSaxAltRadio.addEventListener('change', () => {loadInstrumentSettings('saxAlt'); setSelectedNotes(); setFilteredNotes(); initNoteStatistics(); resetWeightedNoteNames(); updateInstrument(); saveOptions(); nextNote();});
-instrumentRegularRadio.addEventListener('change', () => {loadInstrumentSettings('regular'); setSelectedNotes(); setFilteredNotes(); initNoteStatistics(); resetWeightedNoteNames(); updateInstrument(); saveOptions(); nextNote();});
+instrumentSelector.addEventListener('change', () => { loadInstrumentSettings(instrumentSelector.value); setSelectedNotes(); setFilteredNotes(); initNoteStatistics(); resetWeightedNoteNames(); updateInstrument(); saveOptions(); nextNote(); });
 showSharpCheckbox.addEventListener('change', () => { saveOptions(); setFilteredNotes(); resetWeightedNoteNames(); nextNote(); });
 showFlatCheckbox.addEventListener('change', () => { saveOptions(); setFilteredNotes(); resetWeightedNoteNames(); nextNote(); });
 smallRangeRadio.addEventListener('change', () => { saveOptions(); setFilteredNotes(); resetWeightedNoteNames(); nextNote(); });
@@ -190,29 +199,6 @@ stopButton.addEventListener("click", () => {
   }
 });
 
-function setOptionEnableState(state){ //no longer in use
-  showNoteNameCheckbox.disabled = !state;
-  showArrowsCheckbox.disabled = !state;
-  showGhostNoteCheckbox.disabled = !state;
-  playNoteCheckbox.disabled = !state;
-  useBassClefCheckbox.disabled = !state;
-  showSummaryCheckbox.disabled = !state;
-  volumeThresholdInput.disabled = !state;
-  toleranceInput.disabled = !state;
-  offsetInput.disabled = !state;
-  pauseCheckbox.disabled = !state;
-  pauseInput.disabled = !state;
-  instrumentSaxTenorRadio.disabled = !state;
-  instrumentSaxAltRadio.disabled = !state;
-  instrumentRegularRadio.disabled = !state;
-  smallRangeRadio.disabled = !state;
-  middleRangeRadio.disabled = !state;
-  largeRangeRadio.disabled = !state;
-  showSharpCheckbox.disabled = !state;
-  showFlatCheckbox.disabled = !state;
-  noteFilterCheckbox.disabled = !state;
-}
-
 function handleButtons(force = false) {
   if(running || force) {
     startButton.style.display = "none";
@@ -233,16 +219,8 @@ function updateInstrument() {
   instruction.style.visibility = 'visible'; 
   instruction.style.opacity = '1';
   const instrumentName = document.getElementById('instrumentName');
-  if (instrumentSaxTenorRadio.checked) {
-    instrumentImage.src = 'images/saxTenor.png';
-    instrumentName.innerHTML = getText("options", "instrumentSaxTenorRadio"); 
-  } else if (instrumentSaxAltRadio.checked) {
-    instrumentImage.src = 'images/saxAlt.png';
-    instrumentName.innerHTML = getText("options", "instrumentSaxAltRadio"); 
-  } else {
-    instrumentImage.src = 'images/piano.png';
-    instrumentName.innerHTML = getText("options", "instrumentRegularRadio"); 
-  }
+  instrumentName.innerHTML = getText("options", instruments[instrumentSelector.value].key);
+  instrumentImage.src = instruments[instrumentSelector.value].image;
   instrumentImage.style.visibility = 'visible'; 
   instrumentImage.style.opacity = '1';
 }
@@ -278,15 +256,7 @@ function setSelectedNotes() {
 }
 
 function getSelectedNotes() {//pick notes based on instrument (different tuning)
-  let notes;
-  if (instrumentSaxTenorRadio.checked) {
-    notes = allNotes_sax_tenor;
-  } else if (instrumentSaxAltRadio.checked) {
-    notes = allNotes_sax_alt;
-  } else {
-    notes = allNotes_regular;
-  }  
-  return notes;
+  return instruments[instrumentSelector.value].notes;
 }
 
 var notesFiltered = [];
@@ -743,7 +713,7 @@ function checkNote(detectedFrequency, amplitude, confidence) {
 }
 
 function handleIncorrectNotePlayed(closestNote, targetFrequency, detectedFrequency){
-  if(pauseCheckbox.checked && pauseTextFieldRadio.checked){ //only if not auto (auto waits for silence to propose next note)
+  if(pauseCheckbox.checked ){ //&& pauseTextFieldRadio.checked only if not auto (auto waits for silence to propose next note)
     status("<span class='message-red'>" + getText("texts", "incorrect", {note: closestNote.name}) + "</span>" + (showNoteNameCheckbox.checked ? getText("texts", "desiredNote", {note: currentNote.name}) : getText("texts", "tryAgain")));
     highlightNote(false); //since will always be red when playing with no pause
   // } else {
@@ -963,7 +933,7 @@ function updateTexts() {
   //MAIN GUI
   document.title = getText('main', 'title');
   document.getElementById('title').textContent = getText('main', 'title');
-  document.getElementById('instruction').innerHTML = getText('main', 'instruction'); //, { instrument: document.getElementById('instrumentName').textContent });
+  document.getElementById('instruction').innerHTML = getText('main', 'instruction');
   updateInstrument();
   startButton.textContent = getText("main", "startButton"); // Change button text to "Weiter"
   stopButton.textContent = getText("main", "stopButton"); // Change button text to "Stop"
@@ -994,12 +964,6 @@ function updateTexts() {
   document.getElementById('toleranceInputLabel').title = getText('tooltips', 'toleranceInputLabel');
   document.getElementById('offsetInputLabel').childNodes[0].textContent = getText('options', 'offsetInput');
   document.getElementById('offsetInputLabel').title = getText('tooltips', 'offsetInputLabel');
-  document.getElementById('instrumentSaxTenorRadioLabel').childNodes[1].textContent = getText('options', 'instrumentSaxTenorRadio');
-  document.getElementById('instrumentSaxTenorRadioLabel').title = getText('tooltips', 'instrumentSaxTenorRadioLabel');
-  document.getElementById('instrumentSaxAltRadioLabel').childNodes[1].textContent = getText('options', 'instrumentSaxAltRadio');
-  document.getElementById('instrumentSaxAltRadioLabel').title = getText('tooltips', 'instrumentSaxAltRadioLabel');
-  document.getElementById('instrumentRegularRadioLabel').childNodes[1].textContent = getText('options', 'instrumentRegularRadio');
-  document.getElementById('instrumentRegularRadioLabel').title = getText('tooltips', 'instrumentRegularRadioLabel');
   document.getElementById('smallRangeRadioLabel').childNodes[1].textContent = getText('options', 'smallRangeRadio');
   document.getElementById('smallRangeRadioLabel').title = getText('tooltips', 'smallRangeRadioLabel');
   document.getElementById('middleRangeRadioLabel').childNodes[1].textContent = getText('options', 'middleRangeRadio');
@@ -1016,6 +980,7 @@ function updateTexts() {
   document.getElementById('instrumentTuningDiv').textContent = getText('options', 'instrumentTuning');
   document.getElementById('noteRangeHeadingDiv').textContent = getText('options', 'noteRange');
   document.getElementById('accidentalsDiv').textContent = getText('options', 'accidentals');
+  initInstrumentSelector();
   //SUMMARY
   document.getElementById('summaryHeading').textContent = getText('summary', 'summaryHeading');
   document.getElementById('summaryMessage').textContent = getText('summary', 'summaryMessage');
