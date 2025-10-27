@@ -25,6 +25,7 @@ const showArrowsCheckbox = document.getElementById("showArrowsCheckbox");
 const showGhostNoteCheckbox = document.getElementById("showGhostNoteCheckbox");
 const playNoteCheckbox = document.getElementById("playNoteCheckbox");
 const useMidiCheckbox = document.getElementById("useMidiCheckbox");
+const ignoreOctaveCheckbox = document.getElementById("ignoreOctaveCheckbox");
 const useBassClefCheckbox = document.getElementById("useBassClefCheckbox");
 const showSummaryCheckbox = document.getElementById("showSummaryCheckbox");
 const pauseCheckbox = document.getElementById("pauseCheckbox");
@@ -67,6 +68,7 @@ function loadOptions() {
   showGhostNoteCheckbox.checked = JSON.parse(localStorage.getItem("showGhostNoteCheckbox")) || true;
   playNoteCheckbox.checked = JSON.parse(localStorage.getItem("playNoteCheckbox")) || false;
   useMidiCheckbox.checked = JSON.parse(localStorage.getItem("useMidiCheckbox")) || false;
+  ignoreOctaveCheckbox.checked = JSON.parse(localStorage.getItem("ignoreOctaveCheckbox")) || false;
   useBassClefCheckbox.checked = JSON.parse(localStorage.getItem("useBassClefCheckbox")) || false;
   showSummaryCheckbox.checked = JSON.parse(localStorage.getItem("showSummaryCheckbox")) || false;
   pauseInput.value = localStorage.getItem("pauseInput") || "500";
@@ -105,6 +107,7 @@ function saveOptions() {
   localStorage.setItem("showGhostNoteCheckbox", JSON.stringify(showGhostNoteCheckbox.checked));
   localStorage.setItem("playNoteCheckbox", JSON.stringify(playNoteCheckbox.checked));
   localStorage.setItem("useMidiCheckbox", JSON.stringify(useMidiCheckbox.checked));
+  localStorage.setItem("ignoreOctaveCheckbox", JSON.stringify(ignoreOctaveCheckbox.checked));
   localStorage.setItem("useBassClefCheckbox", JSON.stringify(useBassClefCheckbox.checked));
   localStorage.setItem("showSummaryCheckbox", JSON.stringify(showSummaryCheckbox.checked));
   localStorage.setItem("pauseCheckbox", JSON.stringify(pauseCheckbox.checked));
@@ -163,6 +166,14 @@ playNoteCheckbox.addEventListener('change', () => {
 });
 useMidiCheckbox.addEventListener('change', () => {
   saveOptions();
+  // enable/disable the ignore-octave checkbox based on MIDI selection
+  if (ignoreOctaveCheckbox) {
+    ignoreOctaveCheckbox.disabled = !useMidiCheckbox.checked;
+    if (!useMidiCheckbox.checked) {
+      ignoreOctaveCheckbox.checked = false;
+      localStorage.setItem("ignoreOctaveCheckbox", JSON.stringify(false));
+    }
+  }
   // If MIDI was enabled while running, re-init detection path
   if (running) {
     // stop current detection and restart with new mode
@@ -170,6 +181,7 @@ useMidiCheckbox.addEventListener('change', () => {
     startToneDetection();
   }
 });
+ignoreOctaveCheckbox.addEventListener('change', () => { saveOptions(); });
 useBassClefCheckbox.addEventListener('change', () => {
   saveOptions(); 
   displayNote(currentNote);
@@ -980,6 +992,16 @@ document.getElementById('closeButton').addEventListener('click', () => {
   location.reload();
 });
 
+function initLanguageSelector() {
+  const languages = Object.keys(texts);
+  languages.forEach(language => {
+    const option = document.createElement('option');
+    option.value = language;
+    option.textContent = texts[language].prompt;
+    languageSelector.appendChild(option);
+  });
+}
+
 /*----------------------- LANGUAGE -------------------------------*/
 
 languageSelector.addEventListener('change', (event) => {
@@ -1060,16 +1082,6 @@ function getText(group, key, replacements = {}) {
     text = text.replace(`{${placeholder}}`, value);
   }
   return text;
-}
-
-function initLanguageSelector() {
-  const languages = Object.keys(texts);
-  languages.forEach(language => {
-    const option = document.createElement('option');
-    option.value = language;
-    option.textContent = texts[language].prompt;
-    languageSelector.appendChild(option);
-  });
 }
 
 /*----------------------- Keep Screen turned on -------------------------------*/
@@ -1249,12 +1261,29 @@ async function onMIDIMessage(event) {
       }
     }
 
+    // --- Verarbeitung für die Bewertung: ggf. Oktave ignorieren ---
+    let frequencyForCheck = frequency;
+    if (ignoreOctaveCheckbox && ignoreOctaveCheckbox.checked && currentNote) {
+      try {
+        // berechne MIDI-Nummer der aktuellen Ziel-Note
+        const currentMidi = Math.round(69 + 12 * Math.log2(currentNote.frequency / 440));
+        // bestimme k so dass midiNoteNumber + 12*k am nächsten an currentMidi liegt
+        const k = Math.round((currentMidi - midiNoteNumber) / 12);
+        const adjustedMidi = midiNoteNumber + 12 * k;
+        frequencyForCheck = 440 * Math.pow(2, (adjustedMidi - 69) / 12);
+        debug(`MIDI: original ${midiNoteNumber}, adjusted ${adjustedMidi} for octave-ignoring`, false);
+      } catch (err) {
+        console.warn('Octave-ignore adjustment failed, using original frequency', err);
+        frequencyForCheck = frequency;
+      }
+    }
+
     // Weiterleiten an die Prüf-Logik (checkNote) mit angepasster Amplitude-Skalierung (0..100)
     if (typeof checkNote === 'function') {
       try {
         const amplitudeForCheck = (velocity / 127) * 100; // scale to same range as microphone amplitude
         // forceImmediate=true so MIDI inputs get scored immediately (no waiting for "silence")
-        checkNote(frequency, amplitudeForCheck, 100.0, true);
+        checkNote(frequencyForCheck, amplitudeForCheck, 100.0, true);
       } catch (err) {
         console.warn('checkNote call failed for MIDI input', err);
       }
@@ -1264,5 +1293,4 @@ async function onMIDIMessage(event) {
   }
   // Note Off / NoteOn mit velocity=0 werden hier ignoriert
 }
-
 // ---------------- end MIDI support --------------------
