@@ -24,6 +24,7 @@ const showNoteNameCheckbox = document.getElementById("showNoteNameCheckbox");
 const showArrowsCheckbox = document.getElementById("showArrowsCheckbox");
 const showGhostNoteCheckbox = document.getElementById("showGhostNoteCheckbox");
 const playNoteCheckbox = document.getElementById("playNoteCheckbox");
+const useMidiCheckbox = document.getElementById("useMidiCheckbox");
 const useBassClefCheckbox = document.getElementById("useBassClefCheckbox");
 const showSummaryCheckbox = document.getElementById("showSummaryCheckbox");
 const pauseCheckbox = document.getElementById("pauseCheckbox");
@@ -65,6 +66,7 @@ function loadOptions() {
   showArrowsCheckbox.checked = JSON.parse(localStorage.getItem("showArrowsCheckbox")) || false;
   showGhostNoteCheckbox.checked = JSON.parse(localStorage.getItem("showGhostNoteCheckbox")) || true;
   playNoteCheckbox.checked = JSON.parse(localStorage.getItem("playNoteCheckbox")) || false;
+  useMidiCheckbox.checked = JSON.parse(localStorage.getItem("useMidiCheckbox")) || false;
   useBassClefCheckbox.checked = JSON.parse(localStorage.getItem("useBassClefCheckbox")) || false;
   showSummaryCheckbox.checked = JSON.parse(localStorage.getItem("showSummaryCheckbox")) || false;
   pauseInput.value = localStorage.getItem("pauseInput") || "500";
@@ -102,6 +104,7 @@ function saveOptions() {
   localStorage.setItem("showArrowsCheckbox", JSON.stringify(showArrowsCheckbox.checked));
   localStorage.setItem("showGhostNoteCheckbox", JSON.stringify(showGhostNoteCheckbox.checked));
   localStorage.setItem("playNoteCheckbox", JSON.stringify(playNoteCheckbox.checked));
+  localStorage.setItem("useMidiCheckbox", JSON.stringify(useMidiCheckbox.checked));
   localStorage.setItem("useBassClefCheckbox", JSON.stringify(useBassClefCheckbox.checked));
   localStorage.setItem("showSummaryCheckbox", JSON.stringify(showSummaryCheckbox.checked));
   localStorage.setItem("pauseCheckbox", JSON.stringify(pauseCheckbox.checked));
@@ -157,6 +160,15 @@ showGhostNoteCheckbox.addEventListener('change', () => { saveOptions(); hideGhos
 playNoteCheckbox.addEventListener('change', () => {
   saveOptions(); 
   playMp3(currentNote);
+});
+useMidiCheckbox.addEventListener('change', () => {
+  saveOptions();
+  // If MIDI was enabled while running, re-init detection path
+  if (running) {
+    // stop current detection and restart with new mode
+    stopToneDetection();
+    startToneDetection();
+  }
 });
 useBassClefCheckbox.addEventListener('change', () => {
   saveOptions(); 
@@ -439,6 +451,7 @@ function setStemDirection(position) {
 let currentOscillator = null; 
 isTonePlaying = false;
 function playTone(note) {
+  enableAudioContextIfRequired();
   if (currentOscillator) {
     currentOscillator.stop();
     currentOscillator = null;
@@ -523,21 +536,38 @@ function enableAudioContextIfRequired() {
 const confidenceRequested = 0.8;
 
 function startToneDetection(){
-  loadModel().then(() => {
-    if(!running){
-      initAudio();
-      initNoteStatistics();
-      handleButtons(true);
-      requestWakeLock();
-      nextNote(); 
-    }
-    saveOptions();
-  });
+  // If MIDI mode requested, initialize MIDI path, otherwise use model+microphone
+  if (useMidiCheckbox.checked) {
+    // No model required for MIDI input
+    initMIDI().then(() => {
+      if (!running) {
+        running = true;
+        initNoteStatistics();
+        handleButtons(true);
+        requestWakeLock();
+        nextNote();
+      }
+      saveOptions();
+    }).catch((err) => { error("MIDI init failed: " + err); });
+  } else {
+    loadModel().then(() => {
+      if(!running){
+        initAudio();
+        initNoteStatistics();
+        handleButtons(true);
+        requestWakeLock();
+        nextNote(); 
+      }
+      saveOptions();
+    });
+  }
 }
+
 
 function stopToneDetection() {
   running = false;
   // Stop any ongoing audio processing or event listeners here
+  detachMIDI();
   if (audioContext && audioContext.state !== 'closed') {
     audioContext.close();
   }
