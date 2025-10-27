@@ -1173,16 +1173,16 @@ async function onMIDIMessage(event) {
     const frequency = 440 * Math.pow(2, (midiNoteNumber - 69) / 12);
     const noteName = midiNoteToName(midiNoteNumber);
 
-    // UI-Debugausgabe (sichtbar machen)
-    try {
-      const debugSpan = document.getElementById('debugMsg');
-      if (debugSpan) {
-        debugSpan.style.display = 'inline';
-        debugSpan.textContent = `MIDI: ${midiNoteNumber} ${noteName} freq=${frequency.toFixed(2)}Hz vel=${velocity}`;
-      }
-      const statusSpan = document.getElementById('status');
-      if (statusSpan) status.textContent = `Gespielte Note: ${noteName}`;
-    } catch (_) {}
+    //// UI-Debugausgabe (sichtbar machen)
+    //try {
+      //const debugSpan = document.getElementById('debugMsg');
+      //if (debugSpan) {
+        //debugSpan.style.display = 'inline';
+        //debugSpan.textContent = `MIDI: ${midiNoteNumber} ${noteName} freq=${frequency.toFixed(2)}Hz vel=${velocity}`;
+      //}
+      //const statusSpan = document.getElementById('status');
+      //if (statusSpan) status.textContent = `Gespielte Note: ${noteName}`;
+    //} catch (_) {}
 
     // Suche ein vorhandenes Sample in der aktuellen Notenliste (falls vorhanden)
     let sampleNote = null;
