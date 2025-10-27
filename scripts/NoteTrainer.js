@@ -1148,37 +1148,83 @@ function detachMIDI() {
 }
 
 // MIDI message handler: NoteOn => play incoming note and forward to checkNote
+// Hilfsfunktion: MIDI-Nummer -> Notenname (z.B. 60 -> C4)
+function midiNoteToName(n) {
+    const names = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+    const name = names[n % 12];
+    const octave = Math.floor(n / 12) - 1; // MIDI 60 => C4
+    return name + octave;
+}
+
+// Ersetze/aktualisiere die onMIDIMessage-Funktion
 function onMIDIMessage(event) {
   // event.data = [status, data1, data2]
   const [status, data1, data2] = event.data;
   const command = status & 0xf0;
-
-  // Note On (0x90) with velocity > 0
+  // Note On (0x90) mit Velocity > 0
   if (command === 0x90 && data2 > 0) {
     const midiNoteNumber = data1;
+    const velocity = data2;
     const frequency = 440 * Math.pow(2, (midiNoteNumber - 69) / 12);
+    const noteName = midiNoteToName(midiNoteNumber);
 
+    // UI-Debugausgabe (sichtbar machen)
     try {
-      // play the incoming MIDI note regardless of correctness
-      if (typeof playTone === 'function') {
-        playTone({ frequency: frequency });
-      } else {
-        debug('playTone not available to play MIDI note.');
+      const debugSpan = document.getElementById('debugMsg');
+      if (debugSpan) {
+        debugSpan.style.display = 'inline';
+        debugSpan.textContent = `MIDI: ${midiNoteNumber} ${noteName} freq=${frequency.toFixed(2)}Hz vel=${velocity}`;
       }
+      const statusSpan = document.getElementById('status');
+      if (statusSpan) statusSpan.textContent = `Gespielte Note: ${noteName}`;
+    } catch (_) {}
 
-      // forward to the existing pitch-check flow if there is a checkNote function
-      if (typeof checkNote === 'function') {
-        // pass frequency, confidence and volume approximations
-        checkNote(frequency, 100.0, (data2 / 127));
-      } else {
-        debug('checkNote not defined; MIDI note not forwarded to pitch check.');
+    // Versuch: vorhandene MP3-Funktion nutzen, falls vorhanden
+    const fakeNote = { midi: midiNoteNumber, frequency: frequency, name: noteName };
+    let playedBySample = false;
+    if (typeof playMp3 === 'function') {
+      try {
+        playMp3(fakeNote);
+        playedBySample = true;
+      } catch (err) {
+        console.warn('playMp3 failed for MIDI note, fallback to oscillator', err);
+        playedBySample = false;
       }
-    } catch (err) {
-      console.error('Error handling MIDI note:', err);
+    }
+
+    // Fallback: saubere Sine-Oszillator-Wiedergabe (kein quäkendes Sawtooth)
+    if (!playedBySample) {
+      try {
+        if (!audioContext) {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(frequency + parseInt(offsetInput?.value || 0), audioContext.currentTime);
+        gain.gain.setValueAtTime(Math.max(0.03, velocity / 127), audioContext.currentTime);
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.start();
+        osc.stop(audioContext.currentTime + 0.6);
+      } catch (err) {
+        console.error('Oscillator fallback failed', err);
+      }
+    }
+
+    // Weiterleiten an die Prüf-Logik (checkNote) mit hoher confidence
+    if (typeof checkNote === 'function') {
+      try {
+        // checkNote erwartet (frequency, confidence, volume) in bisherigen Aufrufen
+        checkNote(frequency, 100.0, velocity / 127);
+      } catch (err) {
+        console.warn('checkNote call failed for MIDI input', err);
+      }
+    } else {
+      console.debug('checkNote nicht definiert — MIDI wird nicht geprüft.');
     }
   }
-
-  // Note Off or NoteOn with velocity 0 are ignored here
+  // Note Off / NoteOn mit velocity=0 werden hier ignoriert
 }
 
 // ---------------- end MIDI support --------------------
