@@ -731,7 +731,7 @@ var decayTimeoutReached = false;
 var toneNamePrevious = null;
 var incorrectWhenSilence = false;
 
-function checkNote(detectedFrequency, amplitude, confidence) {
+function checkNote(detectedFrequency, amplitude, confidence, forceImmediate = false) {
   if (currentNote) { //An intial note was proposed
     if ((confidence > confidenceRequested) && (amplitude > parseFloat(volumeThresholdInput.value))) { // Confidence and amplitude are high enough to consider the detected note
       const closestNote = getClosestNote(detectedFrequency);
@@ -748,6 +748,11 @@ function checkNote(detectedFrequency, amplitude, confidence) {
         if (!correctNotePlayed && ((closestNote.name != toneNamePrevious) || decayTimeoutReached)) { //if a tone was played correctly, discard any wrong notes after that. We enforce different proposed notes so will discard a previous note played again.
           incorrectWhenSilence = true; //flag to only count as incorrect if followed by silence
           handleIncorrectNotePlayed(closestNote, targetFrequency, detectedFrequency);
+          // If caller requests immediate counting (e.g. MIDI), count incorrect now instead of waiting for silence
+          if (forceImmediate) {
+            accountIncorrectNotePlayed();
+            incorrectWhenSilence = false; // avoid double-counting when silence later occurs
+          }
         }
       }
       triedOnce = true;
@@ -1176,7 +1181,7 @@ async function onMIDIMessage(event) {
         debugSpan.textContent = `MIDI: ${midiNoteNumber} ${noteName} freq=${frequency.toFixed(2)}Hz vel=${velocity}`;
       }
       const statusSpan = document.getElementById('status');
-      if (statusSpan) statusSpan.textContent = `Gespielte Note: ${noteName}`;
+      if (statusSpan) status.textContent = `Gespielte Note: ${noteName}`;
     } catch (_) {}
 
     // Suche ein vorhandenes Sample in der aktuellen Notenliste (falls vorhanden)
@@ -1248,7 +1253,8 @@ async function onMIDIMessage(event) {
     if (typeof checkNote === 'function') {
       try {
         const amplitudeForCheck = (velocity / 127) * 100; // scale to same range as microphone amplitude
-        checkNote(frequency, amplitudeForCheck, 100.0);
+        // forceImmediate=true so MIDI inputs get scored immediately (no waiting for "silence")
+        checkNote(frequency, amplitudeForCheck, 100.0, true);
       } catch (err) {
         console.warn('checkNote call failed for MIDI input', err);
       }
