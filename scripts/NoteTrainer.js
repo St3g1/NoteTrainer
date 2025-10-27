@@ -376,6 +376,8 @@ function displayNote(note) {
   drawNote(note);
   drawNoteName(note);
   drawAccidental(note);
+  // Ensure ledger lines are drawn immediately when the note is displayed
+  drawLedgerLines(note);
   playMp3(note);
 //  setStemDirection(note.position);
 }
