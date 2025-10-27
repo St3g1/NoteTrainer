@@ -1156,8 +1156,8 @@ function midiNoteToName(n) {
     return name + octave;
 }
 
-// Ersetze/aktualisiere die onMIDIMessage-Funktion
-function onMIDIMessage(event) {
+// Ersetze die onMIDIMessage-Funktion durch die folgende async-Variante
+async function onMIDIMessage(event) {
   // event.data = [status, data1, data2]
   const [status, data1, data2] = event.data;
   const command = status & 0xf0;
@@ -1179,25 +1179,57 @@ function onMIDIMessage(event) {
       if (statusSpan) statusSpan.textContent = `Gespielte Note: ${noteName}`;
     } catch (_) {}
 
-    // Versuch: vorhandene MP3-Funktion nutzen, falls vorhanden
-    const fakeNote = { midi: midiNoteNumber, frequency: frequency, name: noteName };
-    let playedBySample = false;
-    if (typeof playMp3 === 'function') {
+    // Suche ein vorhandenes Sample in der aktuellen Notenliste (falls vorhanden)
+    let sampleNote = null;
+    try {
+      // notesSelected sollte die aktuell verwendeten Noten enthalten
+      if (Array.isArray(notesSelected)) {
+        sampleNote = notesSelected.find(n => n.name === noteName) || null;
+      }
+    } catch (_) {
+      sampleNote = null;
+    }
+
+    // Fallback: nächstgelegene Note (falls kein genaues Sample vorhanden)
+    if (!sampleNote) {
       try {
-        playMp3(fakeNote);
-        playedBySample = true;
+        sampleNote = getClosestNote(frequency);
+      } catch (_) {
+        sampleNote = null;
+      }
+    }
+
+    let playedBySample = false;
+
+    // Wenn ein Sample-Objekt mit mp3-Feld existiert, lade & spiele das MP3 (ohne playNoteCheckbox zu beachten)
+    if (sampleNote && sampleNote.mp3) {
+      try {
+        enableAudioContextIfRequired();
+        // stoppe evtl. laufende Quelle
+        if (currentSource) { try { currentSource.stop(); } catch(_){} currentSource = null; }
+        const audioBuffer = await loadMp3(sampleNote); // loadMp3 gibt null zurück und spielt fallback, falls fehlerhaft
+        if (audioBuffer) {
+          const source = audioContext.createBufferSource();
+          source.buffer = audioBuffer;
+          source.connect(audioContext.destination);
+          source.start();
+          isMp3Playing = true;
+          source.onended = () => { currentSource = null; isMp3Playing = false; };
+          currentSource = source;
+          playedBySample = true;
+        } else {
+          playedBySample = false;
+        }
       } catch (err) {
-        console.warn('playMp3 failed for MIDI note, fallback to oscillator', err);
+        console.warn('Fehler beim Abspielen des Sample-MP3:', err);
         playedBySample = false;
       }
     }
 
-    // Fallback: saubere Sine-Oszillator-Wiedergabe (kein quäkendes Sawtooth)
+    // Falls kein Sample abgespielt wurde: sauberer Sine-Oszillator als Fallback
     if (!playedBySample) {
       try {
-        if (!audioContext) {
-          audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        }
+        enableAudioContextIfRequired();
         const osc = audioContext.createOscillator();
         const gain = audioContext.createGain();
         osc.type = 'sine';
@@ -1212,11 +1244,11 @@ function onMIDIMessage(event) {
       }
     }
 
-    // Weiterleiten an die Prüf-Logik (checkNote) mit hoher confidence
+    // Weiterleiten an die Prüf-Logik (checkNote) mit angepasster Amplitude-Skalierung (0..100)
     if (typeof checkNote === 'function') {
       try {
-        // checkNote erwartet (frequency, confidence, volume) in bisherigen Aufrufen
-        checkNote(frequency, 100.0, velocity / 127);
+        const amplitudeForCheck = (velocity / 127) * 100; // scale to same range as microphone amplitude
+        checkNote(frequency, amplitudeForCheck, 100.0);
       } catch (err) {
         console.warn('checkNote call failed for MIDI input', err);
       }
