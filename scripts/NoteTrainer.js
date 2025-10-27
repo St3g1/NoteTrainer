@@ -342,9 +342,26 @@ let offset_global = -60; //using svg for flat and sharp somehow requires a diffe
 
 // Display the note on the staff
 function displayNote(note) {
+  // Guard: nothing to display
+  if (!note) {
+    // clear UI elements that depend on a current note
+    currentNote = null;
+    noteElement.style.display = 'none';
+    ghostNoteElement.style.display = 'none';
+    noteNameElement.textContent = '';
+    clefTrebleElement.style.display = 'none';
+    clefBassElement.style.display = 'none';
+    sharpElement.style.display = 'none';
+    flatElement.style.display = 'none';
+    // hide ledger lines if you have a helper for that (optional)
+    return;
+  }
+
+  // existing displayNote logic...
+  currentNote = note;
+  noteElement.style.display = 'block';
   drawClef(note);
   drawNote(note);
-  drawLedgerLines(note);
   drawNoteName(note);
   drawAccidental(note);
   playMp3(note);
@@ -352,6 +369,14 @@ function displayNote(note) {
 }
 
 function drawClef(note){
+  // Guard: ensure note object exists and has position
+  if (!note || typeof note.position === 'undefined' || note.position === null) {
+    // fallback: hide both clefs (or keep previously shown one)
+    clefTrebleElement.style.display = 'none';
+    clefBassElement.style.display = 'none';
+    return;
+  }
+
   if((note.position < clefSwitchPosition) && useBassClefCheckbox.checked){
     clefTrebleElement.style.display = "none";
     clefBassElement.style.display = "block";
@@ -1075,3 +1100,85 @@ document.getElementById("bot").addEventListener('click', () => {
   if(noteIndex >= notesFiltered.length){noteIndex =0;}  
   displayNote(notesFiltered[noteIndex]);}
 );
+
+// ---------------- MIDI support --------------------
+// Minimal, safe MIDI initialization + handlers.
+// Attaches incoming MIDI NoteOn to playTone(...) and forwards frequency to existing checkNote(...) if available.
+let midiAccess = null;
+let midiInputs = [];
+
+async function initMIDI() {
+  if (!navigator.requestMIDIAccess) {
+    throw new Error('Web MIDI API not supported in this browser.');
+  }
+  midiAccess = await navigator.requestMIDIAccess();
+  onMIDISuccess(midiAccess);
+  // listen for connection/disconnection events
+  midiAccess.onstatechange = (e) => {
+    onMIDISuccess(midiAccess);
+  };
+  return;
+}
+
+function onMIDISuccess(access) {
+  // detach old listeners first
+  detachMIDI();
+  midiInputs = [];
+  for (let input of access.inputs.values()) {
+    midiInputs.push(input);
+    try {
+      input.onmidimessage = onMIDIMessage;
+    } catch (err) {
+      console.warn('Could not attach onmidimessage for input', input, err);
+    }
+  }
+  if (midiInputs.length === 0) {
+    debug('No MIDI inputs found.');
+  } else {
+    debug('MIDI inputs attached: ' + midiInputs.length);
+  }
+}
+
+function detachMIDI() {
+  if (!midiAccess) return;
+  for (let input of midiInputs) {
+    try { input.onmidimessage = null; } catch (_) {}
+  }
+  midiInputs = [];
+}
+
+// MIDI message handler: NoteOn => play incoming note and forward to checkNote
+function onMIDIMessage(event) {
+  // event.data = [status, data1, data2]
+  const [status, data1, data2] = event.data;
+  const command = status & 0xf0;
+
+  // Note On (0x90) with velocity > 0
+  if (command === 0x90 && data2 > 0) {
+    const midiNoteNumber = data1;
+    const frequency = 440 * Math.pow(2, (midiNoteNumber - 69) / 12);
+
+    try {
+      // play the incoming MIDI note regardless of correctness
+      if (typeof playTone === 'function') {
+        playTone({ frequency: frequency });
+      } else {
+        debug('playTone not available to play MIDI note.');
+      }
+
+      // forward to the existing pitch-check flow if there is a checkNote function
+      if (typeof checkNote === 'function') {
+        // pass frequency, confidence and volume approximations
+        checkNote(frequency, 100.0, (data2 / 127));
+      } else {
+        debug('checkNote not defined; MIDI note not forwarded to pitch check.');
+      }
+    } catch (err) {
+      console.error('Error handling MIDI note:', err);
+    }
+  }
+
+  // Note Off or NoteOn with velocity 0 are ignored here
+}
+
+// ---------------- end MIDI support --------------------
