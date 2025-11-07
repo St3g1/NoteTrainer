@@ -17,6 +17,14 @@
 <body>
   <h1 id="title">Noten Trainer</h1>
   <p id="instruction" style="visibility: hidden; opacity: 0;">Spiele den Ton auf dem <span id="instrumentName">Saxophon</span>:</p>
+
+  <!-- HUD -->
+  <div id="hud" class="hud">
+    <div id="hudLives" class="hud-item">Lives: <span id="hudLivesVal">5</span></div>
+    <div id="hudTimer" class="hud-item">Timer: <span id="hudTimerVal">30s</span></div>
+    <div id="hudScore" class="hud-item">Score: <span id="hudScoreVal">0</span></div>
+  </div>
+
   <div class="container">
     <!--------------- BURGER MENU ------------------>
     <div class="burger-menu" id="burgerMenu">
@@ -25,6 +33,7 @@
     <!--------------- OPTIONS ------------------>
     <div class="option-container" id="optionContainer">
       <div id="optionsTitle"><h2>Optionen</h2></div>
+      <div style="margin-bottom:8px;"><a id="highscoresLink" href="highscores.html">Highscores</a></div>
       <label id="showNoteNameCheckboxLabel"><input type="checkbox" id="showNoteNameCheckbox">Zeige Notennamen</label>
       <label id="showArrowsCheckboxLabel"><input type="checkbox" id="showArrowsCheckbox">Zeige Hilfspfeile</label>
       <label id="showGhostNoteCheckboxLabel"><input type="checkbox" id="showGhostNoteCheckbox">Zeige Geisternote</label>
@@ -38,7 +47,7 @@
       <div id="pauseCheckboxDiv" class="checkbox-text">
         <label id="pauseCheckboxLabel"><input type="checkbox" id="pauseCheckbox" >Pause: 
         <label id="pauseAutoRadioLabel"><input type="radio" name="pauseOption" id="pauseAutoRadio" value="auto" checked>Auto</label>
-        <label id="pauseTextFieldRadioLabel"><input type="radio" name="pauseOption" id="pauseTextFieldRadio" value="textField"><input type="text" id="pauseInput" style="width:50px;""></label>
+        <label id="pauseTextFieldRadioLabel"><input type="radio" name="pauseOption" id="pauseTextFieldRadio" value="textField"><input type="text" id="pauseInput" style="width:50px;"></label>
         </label>
       </div>
       <label id="debugCheckboxLabel" style="display: none;"><input type="checkbox" id="debugCheckbox">Debug (Developer)</label>
@@ -73,7 +82,7 @@
     <div id="accidentalsDiv" class="option-heading">Vorzeichen:</div>
       <div>
         <label id="showSharpCheckboxLabel"><input type="checkbox" id="showSharpCheckbox">Aktiviere <b>♯</b></label>
-        <label id="showFlatCheckboxLabel"><input type="checkbox" id="showFlatCheckbox">Aktiviere <b>♭</bb></label>
+        <label id="showFlatCheckboxLabel"><input type="checkbox" id="showFlatCheckbox">Aktiviere <b>♭</b></label>
       </div>
     </div>
     <div class="content">
@@ -110,13 +119,22 @@
       <button id="startButton">Start</button>
       <button id="continueButton" style="display: none;">Weiter</button>
       <button id="stopButton" style="display: none;">Stop</button>
-    </divd>
+    </div>
   </div>
   <!--------------- MESSAGE ------------------>
   <div id="message">
     <span id="status"></span>
     <span id="debugMsg" style="display: none;"></span>
   </div>
+
+  <!--------------- END GAME DIALOG ------------------>
+  <div id="endGameDialog" class="modal" style="display:none;">
+    <h2 id="endGameHeading">Game Over</h2>
+    <div id="endGameMessage">Your score: <span id="finalScore">0</span></div>
+    <div style="margin-top:8px;">Enter initials (3 letters): <input id="initialsInput" maxlength="3" value="AAA" style="text-transform:uppercase; width:70px; font-weight:bold; text-align:center;" /></div>
+    <div style="margin-top:12px;"><button id="saveHighscoreButton">Save</button> <button id="cancelHighscoreButton">Cancel</button></div>
+  </div>
+
   <!--------------- STATISTICS ------------------>
   <div id="statisticsDialog">
     <h2 id="summaryHeading">Zusammenfassung</h2>
@@ -129,6 +147,7 @@
   <!------------------------------ SCRIPT ----------------------------------->
   <script src="crepe/tfjs-0.8.0.min.js"></script>
   <script src="scripts/NoteTrainer.js"></script>
+  <script src="scripts/highscores.js"></script>
   <script>
     window.addEventListener('load', loadOptions); // Load options when the page loads
   </script>
